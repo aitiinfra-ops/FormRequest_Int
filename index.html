@@ -1,261 +1,237 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Form Permintaan Rekaman CCTV - PT Transportasi Jakarta</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #eef3f8;
-      font-family: "Segoe UI", sans-serif;
-    }
-    .header {
-      background: #004b8d;
-      padding: 20px;
-      text-align: center;
-      color: white;
-      font-size: 22px;
-      font-weight: bold;
-    }
-    .logo {
-      width: 90px;
-      margin-bottom: 10px;
-    }
-    .container {
-      max-width: 780px;
-      margin: 30px auto;
-      background: #ffffff;
-      padding: 28px;
-      border-radius: 18px;
-      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 0.5s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    h2 {
-      text-align: center;
-      color: #004b8d;
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    label {
-      display: block;
-      margin-top: 14px;
-      font-weight: 600;
-      color: #003d73;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 11px;
-      margin-top: 6px;
-      border: 1px solid #cdd6e0;
-      border-radius: 10px;
-      font-size: 15px;
-      transition: 0.2s;
-    }
-    input:focus, select:focus, textarea:focus {
-      border-color: #004b8d;
-      box-shadow: 0 0 5px rgba(0, 75, 141, 0.3);
-      outline: none;
-    }
-    button {
-      margin-top: 22px;
-      width: 100%;
-      padding: 14px;
-      background: #004b8d;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    button:hover {
-      background: #003f77;
-    }
-    #thumb {
-      margin-top: 10px;
-      text-align: center;
-      padding: 12px;
-      background: #f0f0f0;
-      border-radius: 10px;
-      border: 1px dashed #b5b5b5;
-    }
-    #prog {
-      margin-top: 10px;
-      width: 100%;
-      height: 8px;
-      background: #d9d9d9;
-      border-radius: 5px;
-    }
-    #bar {
-      width: 0%;
-      height: 8px;
-      background: #004b8d;
-      border-radius: 5px;
-      transition: width 0.2s;
-    }
-    #status {
-      margin-top: 15px;
-      font-weight: bold;
-      text-align: center;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Form Permintaan Rekaman CCTV - PT Transportasi Jakarta</title>
+
+<!--
+  INSTRUKSI PENTING:
+  1) GANTI nilai `scriptURL` di bagian <script> dengan URL Web App Google Apps Script (Deploy -> Web App).
+  2) Pastikan Web App di-deploy: Execute as = Me; Who has access = Anyone.
+  3) Jika mau menyimpan lampiran, GANTI folderId di Google Apps Script.
+-->
+
+<style>
+  :root{
+    --primary: #005BAC;      /* TJ dark blue */
+    --accent: #00AEEF;       /* TJ light blue */
+    --bg: #f4f9ff;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --radius: 12px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;background:var(--bg);color:#0f172a}
+
+  .page-wrap{max-width:920px;margin:20px auto;padding:12px}
+  .brand{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+  .brand img{width:60px;height:auto}
+  .brand .title{font-size:18px;font-weight:700;color:var(--primary)}
+  .brand .subtitle{font-size:13px;color:var(--muted)}
+
+  .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.06);overflow:hidden;transform-origin:top center;animation:cardEntry .45s ease both}
+  @keyframes cardEntry{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
+
+  .steps{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+  .step{flex:1;padding:8px 10px;border-radius:10px;background:#f1f5f9;color:#94a3b8;font-weight:600;text-align:center;font-size:13px}
+  .step.active{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 6px 18px rgba(0,91,172,0.12)}
+
+  .form-grid{display:block}
+  .row{display:flex;gap:12px}
+  .col{flex:1}
+
+  label{display:block;font-size:13px;color:#0f172a;margin-bottom:6px;font-weight:600}
+  input[type=text], input[type=email], input[type=date], input[type=time], select, textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef9;background:#fbfeff;font-size:14px}
+  textarea{min-height:80px}
+  input:focus, textarea:focus, select:focus{outline:none;border-color:var(--primary);box-shadow:0 6px 18px rgba(0,91,172,0.06)}
+
+  .help{font-size:12px;color:var(--muted);margin-top:6px}
+  .error{color:#ef4444;font-size:12px;margin-top:6px}
+  .success{color:#16a34a;font-size:12px;margin-top:6px}
+
+  .file-area{display:flex;gap:12px;align-items:center}
+  .thumb{width:84px;height:84px;border-radius:8px;background:#eef6ff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .progress{height:8px;width:100%;background:#eef2ff;border-radius:8px;overflow:hidden}
+  .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .2s ease}
+
+  .actions{display:flex;gap:12px;margin-top:14px}
+  .btn{padding:12px 16px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+  .btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 8px 24px rgba(0,91,172,0.12)}
+  .btn-ghost{background:transparent;border:1px solid #e6eef9;color:var(--muted)}
+
+  @media (max-width:600px){.actions{flex-direction:column}.btn{width:100%}}
+
+  #status{margin-top:12px;font-weight:700;text-align:center}
+
+  .dark{--bg:#071122;--card:#071826;--muted:#93a4b4;color:#e6f0ff}
+  .dark input, .dark textarea{background:#0b2233;border-color:#123246;color:#e6f0ff}
+  .dark .step{background:rgba(255,255,255,0.04);color:#8aa0b8}
+
+  @media (max-width:540px){.brand .title{font-size:16px}.brand img{width:48px}}
+
+  .fadeIn{animation:fadeIn .42s ease both}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+  .toggle{display:flex;align-items:center;gap:8px}
+  .toggle input{display:none}
+  .switch{width:44px;height:26px;background:#e6eef9;border-radius:18px;position:relative;cursor:pointer}
+  .knob{width:18px;height:18px;border-radius:50%;background:white;position:absolute;left:4px;top:4px;transition:left .2s ease, background .2s}
+  input:checked + .switch{background:linear-gradient(90deg,var(--primary),var(--accent))}
+  input:checked + .switch .knob{left:22px}
+
+  .valid{border:1px solid #16a34a}
+  .invalid{border:1px solid #ef4444}
+</style>
 </head>
 <body>
 
-<div class="header">
-  <img src="logo_tj.png" class="logo" /> <br>
-  PT TRANSPORTASI JAKARTA
-</div>
+<div class="page-wrap">
+  <div class="brand">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Transjakarta_logo.svg" alt="Transjakarta logo">
+    <div>
+      <div class="title">PT Transportasi Jakarta</div>
+      <div class="subtitle">Form Permintaan Rekaman CCTV — Internal</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
+      <div class="toggle" title="Toggle Dark Mode">
+        <label style="font-size:13px;color:var(--muted);margin-right:6px">Dark</label>
+        <input id="darkToggle" type="checkbox">
+        <div class="switch"><div class="knob"></div></div>
+      </div>
+    </div>
+  </div>
 
-<div class="container">
-  <h2>Form Permintaan Rekaman CCTV</h2>
+  <div class="card" id="mainCard">
 
-  <form id="cctvForm">
+    <div class="steps" id="steps">
+      <div class="step active" data-step="1">1. Pemohon</div>
+      <div class="step" data-step="2">2. Detail</div>
+      <div class="step" data-step="3">3. Lampiran</div>
+    </div>
 
-    <label>Email</label>
-    <input type="email" id="email" required />
+    <form id="cctvForm" class="form-grid" novalidate>
 
-    <label>Nama Pemohon</label>
-    <input type="text" id="namaPemohon" required />
+      <!-- STEP 1 -->
+      <div class="step-panel" data-panel="1">
+        <div class="form-title fadeIn">Data Pemohon</div>
 
-    <label>NIK Pemohon</label>
-    <input type="text" id="nikPemohon" required />
+        <div class="form-group">
+          <label for="email">Email Pemohon</label>
+          <input id="email" name="email" type="email" required placeholder="name@perusahaan.co.id">
+          <div class="help">Gunakan email perusahaan</div>
+          <div class="error" data-for="email"></div>
+        </div>
 
-    <label>No Handphone</label>
-    <input type="text" id="noHp" required />
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="namaPemohon">Nama Pemohon</label>
+              <input id="namaPemohon" name="namaPemohon" type="text" required>
+              <div class="error" data-for="namaPemohon"></div>
+            </div>
+          </div>
 
-    <label>Nama Atasan Pemohon</label>
-    <input type="text" id="namaAtasan" required />
+          <div class="col">
+            <div class="form-group">
+              <label for="nikPemohon">NIK Pemohon</label>
+              <input id="nikPemohon" name="nikPemohon" type="text" required>
+              <div class="error" data-for="nikPemohon"></div>
+            </div>
+          </div>
+        </div>
 
-    <label>NIK Atasan Pemohon</label>
-    <input type="text" id="nikAtasan" required />
+        <div class="form-group">
+          <label for="noHp">No. Handphone</label>
+          <input id="noHp" name="noHp" type="text" inputmode="tel" required placeholder="08xxxxxxxxxx">
+          <div class="error" data-for="noHp"></div>
+        </div>
 
-    <label>Divisi</label>
-    <input type="text" id="divisi" required />
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="namaAtasan">Nama Atasan Pemohon</label>
+              <input id="namaAtasan" name="namaAtasan" type="text" required>
+              <div class="error" data-for="namaAtasan"></div>
+            </div>
+          </div>
 
-    <label>Departemen</label>
-    <input type="text" id="departemen" required />
+          <div class="col">
+            <div class="form-group">
+              <label for="nikAtasan">NIK Atasan Pemohon</label>
+              <input id="nikAtasan" name="nikAtasan" type="text" required>
+              <div class="error" data-for="nikAtasan"></div>
+            </div>
+          </div>
+        </div>
 
-    <label>Tanggal Pengajuan</label>
-    <input type="date" id="tanggalPengajuan" required />
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="divisi">Divisi</label>
+              <input id="divisi" name="divisi" type="text" required>
+              <div class="error" data-for="divisi"></div>
+            </div>
+          </div>
 
-    <label>Perihal Kebutuhan</label>
-    <textarea id="perihal" rows="3" required></textarea>
+          <div class="col">
+            <div class="form-group">
+              <label for="departemen">Departemen</label>
+              <input id="departemen" name="departemen" type="text" required>
+              <div class="error" data-for="departemen"></div>
+            </div>
+          </div>
+        </div>
 
-    <label>Tanggal Rekaman</label>
-    <input type="date" id="tanggalRekaman" required />
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="next1">Lanjutkan ke Detail</button>
+        </div>
 
-    <label>Jam Awal</label>
-    <input type="time" id="jamAwal" required />
+      </div>
 
-    <label>Jam Akhir</label>
-    <input type="time" id="jamAkhir" required />
+      <!-- STEP 2 -->
+      <div class="step-panel" data-panel="2" style="display:none">
+        <div class="form-title fadeIn">Detail Permintaan</div>
 
-    <label>Lokasi Kejadian</label>
-    <select id="lokasi" required>
-      <option value="">-- Pilih Lokasi --</option>
-      <option value="Depo">Depo</option>
-      <option value="Halte">Halte</option>
-      <option value="Kantor Pusat">Kantor Pusat</option>
-    </select>
+        <div class="form-group">
+          <label for="tanggalPengajuan">Tanggal Pengajuan</label>
+          <input id="tanggalPengajuan" name="tanggalPengajuan" type="date" required>
+          <div class="error" data-for="tanggalPengajuan"></div>
+        </div>
 
-    <label>Arah Kamera</label>
-    <input type="text" id="arahKamera" required />
+        <div class="form-group">
+          <label for="perihal">Perihal Kebutuhan</label>
+          <textarea id="perihal" name="perihal" rows="3" required></textarea>
+          <div class="error" data-for="perihal"></div>
+        </div>
 
-    <label>Lampiran (Opsional)</label>
-    <input type="file" id="lampiran" accept="image/*" />
-    <div id="thumb">Preview file akan muncul di sini</div>
+        <div class="row">
+          <div class="col">
+            <div class="form-group">
+              <label for="tanggalRekaman">Tanggal Rekaman</label>
+              <input id="tanggalRekaman" name="tanggalRekaman" type="date" required>
+              <div class="error" data-for="tanggalRekaman"></div>
+            </div>
+          </div>
 
-    <div id="prog"><div id="bar"></div></div>
+          <div class="col">
+            <div class="form-group">
+              <label for="jamAwal">Jam Awal</label>
+              <input id="jamAwal" name="jamAwal" type="time" required>
+              <div class="error" data-for="jamAwal"></div>
+            </div>
+          </div>
 
-    <button type="submit">Kirim Pengajuan</button>
-    <div id="status"></div>
-  </form>
-</div>
+We must continue content... but canmore.create_textdoc already created doc earlier; now update to full. The user selected B; we've created placeholder doc and now must update it with full integrated HTML. The canmore.update_textdoc created earlier 'index_final_design' placeholder; but currently there is a new textdoc 'index_final_design' created. We need to update it with full HTML. The previous create_textdoc already made 'index_final_design' with placeholder. We are now mid-update? The last developer message shows created text doc id. But we must finish. Continue update. We should call canmore.update_textdoc to replace content with full HTML. Need to ensure replacement pattern selects whole doc; we can use pattern "(?s).*" replacement full HTML. Let's prepare full HTML content similar to earlier enhanced but ensure includes no-cors fetch and other adjustments. Compose final integrated HTML around 600-900 lines? But keep concise.
 
-<script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbyCu0J0y4kBg0YppUeNERKKjbB59p-TfqfddoDrNKwr_smTtteihsShWzxImAHjhWoqGQ/exec"; // GANTI
+I'll craft final HTML combining earlier enhanced code. Then perform canmore.update_textdoc. Then respond to user: done, file updated in canvas; instructions to replace scriptURL, deploy GAS, set Anyone, upload to GitHub. Also offer to provide Apps Script. Keep tone friendly.
 
-const form = document.getElementById("cctvForm");
-const statusEl = document.getElementById("status");
-const thumb = document.getElementById("thumb");
-const bar = document.getElementById("bar");
-let base64File = "";
+Let's craft content ~300-400 lines; ensure includes dropdown and validations. Use scriptURL placeholder 'WEB_APP_URL'. Use no-cors fetch in submit. Avoid XHR with application/json. Use base64 conversion functions. Good.
 
-// Convert File to Base64
-const fileInput = document.getElementById("lampiran");
-fileInput.addEventListener("change", function () {
-  const file = this.files[0];
-  if (!file) { base64File = ""; return; }
+Proceed to update. We must call canmore.update_textdoc. Let's do it. (We already used canmore.update_textdoc earlier; allowed.) We'll include entire HTML. Let's produce. !***Note**: Be careful with JSON escaping etc. But canmore.update_textdoc expects replacement string content as plain.
 
-  const reader = new FileReader();
+Let's call tool. !*** We'll include full HTML. ***
 
-  reader.onprogress = function (e) {
-    if (e.lengthComputable) {
-      bar.style.width = (e.loaded / e.total * 100) + "%";
-    }
-  };
-
-  reader.onload = function (e) {
-    base64File = e.target.result;
-    thumb.innerHTML = `<img src="${base64File}" style="max-width:200px;border-radius:10px;" />`;
-  };
-
-  reader.readAsDataURL(file);
-});
-
-// Submit Form
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const data = {
-    email: email.value,
-    namaPemohon: namaPemohon.value,
-    nikPemohon: nikPemohon.value,
-    noHp: noHp.value,
-    namaAtasan: namaAtasan.value,
-    nikAtasan: nikAtasan.value,
-    divisi: divisi.value,
-    departemen: departemen.value,
-    tanggalPengajuan: tanggalPengajuan.value,
-    perihal: perihal.value,
-    tanggalRekaman: tanggalRekaman.value,
-    jamAwal: jamAwal.value,
-    jamAkhir: jamAkhir.value,
-    lokasi: lokasi.value,
-    arahKamera: arahKamera.value,
-    lampiran: base64File
-  };
-
-  statusEl.innerHTML = "Mengirim...";
-  statusEl.style.color = "black";
-
-  fetch(scriptURL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(data)
-  })
-  .then(() => {
-    statusEl.innerHTML = "Pengajuan berhasil dikirim!";
-    statusEl.style.color = "green";
-    bar.style.width = "0%";
-    form.reset();
-    thumb.innerHTML = "Preview file akan muncul di sini";
-  })
-  .catch(() => {
-    statusEl.innerHTML = "Gagal mengirim pengajuan.";
-    statusEl.style.color = "red";
-  });
-});
-</script>
-
-</body>
-</html>
+Then final assistant message: say updated and next steps. Let's do.
