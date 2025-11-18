@@ -9,7 +9,7 @@
   PENTING:
   1) GANTI nilai scriptURL di bagian <script> dengan URL Web App Google Apps Script (Deploy -> Web App).
   2) GANTI folderId di Apps Script dengan ID folder Google Drive tempat lampiran disimpan.
-  3) Pastikan Web App di-deploy dengan akses "Anyone" atau sesuai kebijakan organisasi.
+  3) Pastikan Web App di-deploy dengan akses "Anyone" (atau sesuai kebijakan organisasi).
 -->
 
 <style>
@@ -27,22 +27,22 @@
   html,body{height:100%;margin:0;font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;background:var(--bg);color:#0f172a}
 
   /* Header */
-  .page-wrap{max-width:920px;margin:24px auto;padding:16px}
+  .page-wrap{max-width:920px;margin:18px auto;padding:12px}
   .brand{
-    display:flex;gap:12px;align-items:center;margin-bottom:18px
+    display:flex;gap:12px;align-items:center;margin-bottom:14px
   }
-  .brand img{width:60px;height:auto}
+  .brand img{width:64px;height:auto}
   .brand .title{font-size:18px;font-weight:700;color:var(--primary)}
   .brand .subtitle{font-size:13px;color:var(--muted)}
 
   /* Card */
-  .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.06);overflow:hidden;transform-origin:top center;animation:cardEntry .5s ease both}
-  @keyframes cardEntry{from{opacity:0;transform:translateY(12px) scale(.995)}to{opacity:1;transform:none}}
+  .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.06);overflow:hidden;transform-origin:top center;animation:cardEntry .45s ease both}
+  @keyframes cardEntry{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
 
   /* Stepper */
-  .steps{display:flex;gap:8px;margin-bottom:16px;align-items:center}
+  .steps{display:flex;gap:8px;margin-bottom:12px;align-items:center}
   .step{flex:1;padding:8px 10px;border-radius:10px;background:#f1f5f9;color:#94a3b8;font-weight:600;text-align:center;font-size:13px}
-  .step.active{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 6px 18px rgba(0,91,172,0.18)}
+  .step.active{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 6px 18px rgba(0,91,172,0.12)}
 
   .form-grid{display:block}
   .row{display:flex;gap:12px}
@@ -85,7 +85,7 @@
   @media (max-width:540px){.brand .title{font-size:16px}.brand img{width:48px}}
 
   /* subtle micro animations */
-  .fadeIn{animation:fadeIn .45s ease both}
+  .fadeIn{animation:fadeIn .42s ease both}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
   .toggle{display:flex;align-items:center;gap:8px}
@@ -104,7 +104,7 @@
 
 <div class="page-wrap">
   <div class="brand">
-    <img src="logo_tj" alt="Transjakarta logo">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Transjakarta_logo.svg" alt="Transjakarta logo">
     <div>
       <div class="title">PT Transportasi Jakarta</div>
       <div class="subtitle">Form Permintaan Rekaman CCTV — Internal</div>
@@ -238,286 +238,4 @@
             </div>
           </div>
 
-          <div class="col">
-            <div class="form-group">
-              <label for="jamAkhir">Jam Akhir</label>
-              <input id="jamAkhir" name="jamAkhir" type="time" required>
-              <div class="error" data-for="jamAkhir"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="lokasi">Lokasi Kejadian</label>
-          <select id="lokasi" name="lokasi" required>
-  <option value="">-- Pilih Lokasi --</option>
-  <option value="Depo">Depo</option>
-  <option value="Halte">Halte</option>
-  <option value="Kantor Pusat">Kantor Pusat</option>
-</select>
-<div class="error" data-for="lokasi"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="arahKamera">Arah Kamera</label>
-          <input id="arahKamera" name="arahKamera" type="text" required>
-          <div class="error" data-for="arahKamera"></div>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="btn btn-ghost" id="prev2">Kembali</button>
-          <button type="button" class="btn btn-primary" id="next2">Lanjutkan ke Lampiran</button>
-        </div>
-      </div>
-
-      <!-- STEP 3 -->
-      <div class="step-panel" data-panel="3" style="display:none">
-        <div class="form-title fadeIn">Lampiran & Konfirmasi</div>
-
-        <div class="form-group">
-          <label>Upload Foto (Lampiran)</label>
-          <div class="file-area">
-            <div class="thumb" id="thumb">Preview</div>
-            <div style="flex:1">
-              <input id="lampiran" name="lampiranFile" type="file" accept="image/*">
-              <div class="help">Foto akan diupload ke Google Drive; link akan disimpan di Google Sheet.</div>
-              <div class="error" data-for="lampiran"></div>
-              <div style="margin-top:10px" class="progress"><i id="progBar"></i></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Pernyataan</label>
-          <div style="font-size:13px;color:var(--muted);">Saya menyatakan data yang saya isi adalah benar dan untuk keperluan internal PT Transportasi Jakarta.</div>
-          <div style="margin-top:8px">
-            <label><input id="agree" type="checkbox"> Saya setuju</label>
-            <div class="error" data-for="agree"></div>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="btn btn-ghost" id="prev3">Kembali</button>
-          <button type="submit" class="btn btn-primary" id="submitBtn">Kirim Pengajuan</button>
-        </div>
-
-        <div id="status"></div>
-      </div>
-
-    </form>
-
-  </div>
-</div>
-
-<script>
-// ========== CONFIG ==========
-const scriptURL = 'WEB_APP_URL'; // GANTI: URL Web App (Apps Script) setelah deploy
-
-// ========== UI Helpers ==========
-const steps = Array.from(document.querySelectorAll('.step'));
-const panels = Array.from(document.querySelectorAll('.step-panel'));
-let currentStep = 1;
-
-function showStep(n){
-  currentStep = n;
-  panels.forEach(p => p.style.display = p.dataset.panel == n ? 'block' : 'none');
-  steps.forEach(s => s.classList.toggle('active', Number(s.dataset.step) === n));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// Dark mode toggle
-const darkToggle = document.getElementById('darkToggle');
-darkToggle.addEventListener('change', e => {
-  document.documentElement.classList.toggle('dark', e.target.checked);
-});
-
-// Navigation buttons
-document.getElementById('next1').addEventListener('click', ()=>{
-  if(validateStep(1)) showStep(2);
-});
-
-document.getElementById('next2').addEventListener('click', ()=>{
-  if(validateStep(2)) showStep(3);
-});
-
-document.getElementById('prev2').addEventListener('click', ()=> showStep(1));
-document.getElementById('prev3').addEventListener('click', ()=> showStep(2));
-
-// Initial
-showStep(1);
-
-// ========== Validation ==========
-function setError(fieldName, msg){
-  const el = document.querySelector(`[data-for="${fieldName}"]`);
-  const input = document.querySelector(`[name="${fieldName}"]`) || document.getElementById(fieldName);
-  if(el) el.textContent = msg || '';
-  if(input){
-    input.classList.toggle('invalid', !!msg);
-    input.classList.toggle('valid', !msg && input.value);
-  }
-}
-
-function validateField(name){
-  const val = (document.querySelector(`[name="${name}"]`) || document.getElementById(name)).value.trim();
-  if(name === 'email'){
-    const ok = /^\S+@\S+\.\S+$/.test(val);
-    setError('email', ok? '': 'Masukkan email yang valid');
-    return ok;
-  }
-  if(['namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen','perihal','tanggalRekaman','tanggalPengajuan','jamAwal','jamAkhir','lokasi','arahKamera'].includes(name)){
-    const ok = val.length > 0;
-    setError(name, ok? '': 'Field wajib diisi');
-    return ok;
-  }
-  return true;
-}
-
-// Real-time validation listeners
-['email','namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen','perihal','tanggalRekaman','tanggalPengajuan','jamAwal','jamAkhir','lokasi','arahKamera'].forEach(name=>{
-  const el = document.querySelector(`[name="${name}"]`) || document.getElementById(name);
-  if(el){
-    el.addEventListener('input', ()=> validateField(name));
-    el.addEventListener('blur', ()=> validateField(name));
-  }
-});
-
-function validateStep(step){
-  let ok = true;
-  if(step === 1){
-    ['email','namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen'].forEach(f=>{ if(!validateField(f)) ok = false});
-  }
-  if(step === 2){
-    ['tanggalPengajuan','perihal','tanggalRekaman','jamAwal','jamAkhir','lokasi','arahKamera'].forEach(f=>{ if(!validateField(f)) ok = false});
-    // Additional: jam akhir > jam awal
-    const jamAwal = document.getElementById('jamAwal').value;
-    const jamAkhir = document.getElementById('jamAkhir').value;
-    if(jamAwal && jamAkhir && jamAkhir <= jamAwal){
-      setError('jamAkhir','Jam akhir harus setelah jam awal');
-      ok = false;
-    }
-  }
-  return ok;
-}
-
-// ========== File handling & preview & progress ==========
-const lampiranInput = document.getElementById('lampiran');
-const thumb = document.getElementById('thumb');
-const progBar = document.getElementById('progBar');
-let currentFileBase64 = '';
-
-lampiranInput.addEventListener('change', async (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  // Validate size (limit 5MB)
-  if(file.size > 5 * 1024 * 1024){
-    setError('lampiran','Ukuran file maksimal 5MB');
-    lampiranInput.value = '';
-    return;
-  } else setError('lampiran','');
-
-  // preview
-  const url = URL.createObjectURL(file);
-  thumb.innerHTML = `<img src="${url}" alt="preview">`;
-
-  // convert to base64 with progress
-  currentFileBase64 = await fileToBase64WithProgress(file);
-});
-
-function fileToBase64WithProgress(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onprogress = (evt)=>{
-      if(evt.lengthComputable){
-        const percent = Math.round((evt.loaded/evt.total)*100);
-        progBar.style.width = percent + '%';
-        document.getElementById('progBar').style.width = percent + '%';
-      }
-    };
-    reader.onload = () => { progBar.style.width = '100%'; resolve(reader.result); };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-// ========== Submit (XHR with upload progress) ==========
-const form = document.getElementById('cctvForm');
-form.addEventListener('submit', (ev) => {
-  ev.preventDefault();
-  // final validation
-  if(!validateStep(1) || !validateStep(2)) { showStep(1); return; }
-  const agree = document.getElementById('agree');
-  if(!agree.checked){ setError('agree','Anda harus menyetujui pernyataan'); showStep(3); return; } else setError('agree','');
-
-  // collect data
-  const data = {
-    email: document.getElementById('email').value.trim(),
-    namaPemohon: document.getElementById('namaPemohon').value.trim(),
-    nikPemohon: document.getElementById('nikPemohon').value.trim(),
-    noHp: document.getElementById('noHp').value.trim(),
-    namaAtasan: document.getElementById('namaAtasan').value.trim(),
-    nikAtasan: document.getElementById('nikAtasan').value.trim(),
-    divisi: document.getElementById('divisi').value.trim(),
-    departemen: document.getElementById('departemen').value.trim(),
-    tanggalPengajuan: document.getElementById('tanggalPengajuan').value,
-    perihal: document.getElementById('perihal').value.trim(),
-    tanggalRekaman: document.getElementById('tanggalRekaman').value,
-    jamAwal: document.getElementById('jamAwal').value,
-    jamAkhir: document.getElementById('jamAkhir').value,
-    lokasi: document.getElementById('lokasi').value.trim(),
-    arahKamera: document.getElementById('arahKamera').value.trim(),
-    lampiran: currentFileBase64 || ''
-  };
-
-  // send via XHR to get upload progress
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', scriptURL, true);
-  xhr.setRequestHeader('Content-Type','application/json');
-
-  xhr.upload.onprogress = function(e){
-    if(e.lengthComputable){
-      const perc = Math.round((e.loaded/e.total)*100);
-      progBar.style.width = perc + '%';
-    }
-  };
-
-  xhr.onreadystatechange = function(){
-    if(xhr.readyState === 4){
-      try{
-        const res = JSON.parse(xhr.responseText);
-        if(xhr.status >=200 && xhr.status < 300 && res.status === 'success'){
-          document.getElementById('status').textContent = 'Pengajuan berhasil dikirim!';
-          document.getElementById('status').className = 'success';
-          form.reset();
-          thumb.innerHTML = 'Preview';
-          progBar.style.width = '0%';
-          showStep(1);
-        } else {
-          document.getElementById('status').textContent = 'Gagal: ' + (res && res.error ? res.error : xhr.statusText);
-          document.getElementById('status').className = 'error';
-        }
-      }catch(err){
-        document.getElementById('status').textContent = 'Gagal memproses respons server.';
-        document.getElementById('status').className = 'error';
-      }
-    }
-  };
-
-  xhr.onerror = function(){
-    document.getElementById('status').textContent = 'Gagal mengirim — cek koneksi atau URL Web App.';
-    document.getElementById('status').className = 'error';
-  };
-
-  xhr.send(JSON.stringify(data));
-  document.getElementById('status').textContent = 'Mengirim...';
-});
-
-// Minor improvement: allow pressing Enter to go to next step on some fields
-['email','namaPemohon','nikPemohon','noHp'].forEach(id=>{
-  const el = document.getElementById(id);
-  if(el) el.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') { e.preventDefault(); document.getElementById('next1').click(); } });
-});
-
-</script>
-</body>
-</html>
-
+I will now update the canvas with the improved HTML; then summarize the changes and next steps.
