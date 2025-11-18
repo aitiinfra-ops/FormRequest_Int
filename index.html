@@ -6,10 +6,10 @@
 <title>Form Permintaan Rekaman CCTV - PT Transportasi Jakarta</title>
 
 <!--
-  INSTRUKSI PENTING:
-  1) GANTI nilai `scriptURL` di bagian <script> dengan URL Web App Google Apps Script (Deploy -> Web App).
-  2) Pastikan Web App di-deploy: Execute as = Me; Who has access = Anyone.
-  3) Jika mau menyimpan lampiran, GANTI folderId di Google Apps Script.
+  PENTING:
+  1) GANTI nilai scriptURL di bagian <script> dengan URL Web App Google Apps Script (Deploy -> Web App).
+  2) GANTI folderId di Apps Script dengan ID folder Google Drive tempat lampiran disimpan.
+  3) Pastikan Web App di-deploy dengan akses "Anyone" atau sesuai kebijakan organisasi.
 -->
 
 <style>
@@ -22,21 +22,27 @@
     --radius: 12px;
   }
 
-  *{box-sizing:border-box}
+  /* Reset minimal */
+  *{box-sizing: border-box}
   html,body{height:100%;margin:0;font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;background:var(--bg);color:#0f172a}
 
-  .page-wrap{max-width:920px;margin:20px auto;padding:12px}
-  .brand{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+  /* Header */
+  .page-wrap{max-width:920px;margin:24px auto;padding:16px}
+  .brand{
+    display:flex;gap:12px;align-items:center;margin-bottom:18px
+  }
   .brand img{width:60px;height:auto}
   .brand .title{font-size:18px;font-weight:700;color:var(--primary)}
   .brand .subtitle{font-size:13px;color:var(--muted)}
 
-  .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.06);overflow:hidden;transform-origin:top center;animation:cardEntry .45s ease both}
-  @keyframes cardEntry{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
+  /* Card */
+  .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.06);overflow:hidden;transform-origin:top center;animation:cardEntry .5s ease both}
+  @keyframes cardEntry{from{opacity:0;transform:translateY(12px) scale(.995)}to{opacity:1;transform:none}}
 
-  .steps{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+  /* Stepper */
+  .steps{display:flex;gap:8px;margin-bottom:16px;align-items:center}
   .step{flex:1;padding:8px 10px;border-radius:10px;background:#f1f5f9;color:#94a3b8;font-weight:600;text-align:center;font-size:13px}
-  .step.active{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 6px 18px rgba(0,91,172,0.12)}
+  .step.active{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 6px 18px rgba(0,91,172,0.18)}
 
   .form-grid{display:block}
   .row{display:flex;gap:12px}
@@ -51,28 +57,35 @@
   .error{color:#ef4444;font-size:12px;margin-top:6px}
   .success{color:#16a34a;font-size:12px;margin-top:6px}
 
+  /* File preview & progress */
   .file-area{display:flex;gap:12px;align-items:center}
   .thumb{width:84px;height:84px;border-radius:8px;background:#eef6ff;display:flex;align-items:center;justify-content:center;overflow:hidden}
   .thumb img{width:100%;height:100%;object-fit:cover}
   .progress{height:8px;width:100%;background:#eef2ff;border-radius:8px;overflow:hidden}
   .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .2s ease}
 
+  /* Actions */
   .actions{display:flex;gap:12px;margin-top:14px}
   .btn{padding:12px 16px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
   .btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 8px 24px rgba(0,91,172,0.12)}
   .btn-ghost{background:transparent;border:1px solid #e6eef9;color:var(--muted)}
 
+  /* Buttons responsive full width on mobile */
   @media (max-width:600px){.actions{flex-direction:column}.btn{width:100%}}
 
+  /* Footer status */
   #status{margin-top:12px;font-weight:700;text-align:center}
 
+  /* Dark mode */
   .dark{--bg:#071122;--card:#071826;--muted:#93a4b4;color:#e6f0ff}
   .dark input, .dark textarea{background:#0b2233;border-color:#123246;color:#e6f0ff}
   .dark .step{background:rgba(255,255,255,0.04);color:#8aa0b8}
 
+  /* small screens */
   @media (max-width:540px){.brand .title{font-size:16px}.brand img{width:48px}}
 
-  .fadeIn{animation:fadeIn .42s ease both}
+  /* subtle micro animations */
+  .fadeIn{animation:fadeIn .45s ease both}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
   .toggle{display:flex;align-items:center;gap:8px}
@@ -82,6 +95,7 @@
   input:checked + .switch{background:linear-gradient(90deg,var(--primary),var(--accent))}
   input:checked + .switch .knob{left:22px}
 
+  /* validation colors */
   .valid{border:1px solid #16a34a}
   .invalid{border:1px solid #ef4444}
 </style>
@@ -90,7 +104,7 @@
 
 <div class="page-wrap">
   <div class="brand">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Transjakarta_logo.svg" alt="Transjakarta logo">
+    <img src="logo_tj.png" alt="Transjakarta logo">
     <div>
       <div class="title">PT Transportasi Jakarta</div>
       <div class="subtitle">Form Permintaan Rekaman CCTV — Internal</div>
@@ -224,14 +238,280 @@
             </div>
           </div>
 
-We must continue content... but canmore.create_textdoc already created doc earlier; now update to full. The user selected B; we've created placeholder doc and now must update it with full integrated HTML. The canmore.update_textdoc created earlier 'index_final_design' placeholder; but currently there is a new textdoc 'index_final_design' created. We need to update it with full HTML. The previous create_textdoc already made 'index_final_design' with placeholder. We are now mid-update? The last developer message shows created text doc id. But we must finish. Continue update. We should call canmore.update_textdoc to replace content with full HTML. Need to ensure replacement pattern selects whole doc; we can use pattern "(?s).*" replacement full HTML. Let's prepare full HTML content similar to earlier enhanced but ensure includes no-cors fetch and other adjustments. Compose final integrated HTML around 600-900 lines? But keep concise.
+          <div class="col">
+            <div class="form-group">
+              <label for="jamAkhir">Jam Akhir</label>
+              <input id="jamAkhir" name="jamAkhir" type="time" required>
+              <div class="error" data-for="jamAkhir"></div>
+            </div>
+          </div>
+        </div>
 
-I'll craft final HTML combining earlier enhanced code. Then perform canmore.update_textdoc. Then respond to user: done, file updated in canvas; instructions to replace scriptURL, deploy GAS, set Anyone, upload to GitHub. Also offer to provide Apps Script. Keep tone friendly.
+        <div class="form-group">
+          <label for="lokasi">Lokasi Kejadian</label>
+          <input id="lokasi" name="lokasi" type="text" required>
+          <div class="error" data-for="lokasi"></div>
+        </div>
 
-Let's craft content ~300-400 lines; ensure includes dropdown and validations. Use scriptURL placeholder 'WEB_APP_URL'. Use no-cors fetch in submit. Avoid XHR with application/json. Use base64 conversion functions. Good.
+        <div class="form-group">
+          <label for="arahKamera">Arah Kamera</label>
+          <input id="arahKamera" name="arahKamera" type="text" required>
+          <div class="error" data-for="arahKamera"></div>
+        </div>
 
-Proceed to update. We must call canmore.update_textdoc. Let's do it. (We already used canmore.update_textdoc earlier; allowed.) We'll include entire HTML. Let's produce. !***Note**: Be careful with JSON escaping etc. But canmore.update_textdoc expects replacement string content as plain.
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" id="prev2">Kembali</button>
+          <button type="button" class="btn btn-primary" id="next2">Lanjutkan ke Lampiran</button>
+        </div>
+      </div>
 
-Let's call tool. !*** We'll include full HTML. ***
+      <!-- STEP 3 -->
+      <div class="step-panel" data-panel="3" style="display:none">
+        <div class="form-title fadeIn">Lampiran & Konfirmasi</div>
 
-Then final assistant message: say updated and next steps. Let's do.
+        <div class="form-group">
+          <label>Upload Foto (Lampiran)</label>
+          <div class="file-area">
+            <div class="thumb" id="thumb">Preview</div>
+            <div style="flex:1">
+              <input id="lampiran" name="lampiranFile" type="file" accept="image/*">
+              <div class="help">Foto akan diupload ke Google Drive; link akan disimpan di Google Sheet.</div>
+              <div class="error" data-for="lampiran"></div>
+              <div style="margin-top:10px" class="progress"><i id="progBar"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Pernyataan</label>
+          <div style="font-size:13px;color:var(--muted);">Saya menyatakan data yang saya isi adalah benar dan untuk keperluan internal PT Transportasi Jakarta.</div>
+          <div style="margin-top:8px">
+            <label><input id="agree" type="checkbox"> Saya setuju</label>
+            <div class="error" data-for="agree"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" id="prev3">Kembali</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Kirim Pengajuan</button>
+        </div>
+
+        <div id="status"></div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+// ========== CONFIG ==========
+const scriptURL = 'https://script.google.com/macros/s/AKfycbyCu0J0y4kBg0YppUeNERKKjbB59p-TfqfddoDrNKwr_smTtteihsShWzxImAHjhWoqGQ/exec'; // GANTI: URL Web App (Apps Script) setelah deploy
+
+// ========== UI Helpers ==========
+const steps = Array.from(document.querySelectorAll('.step'));
+const panels = Array.from(document.querySelectorAll('.step-panel'));
+let currentStep = 1;
+
+function showStep(n){
+  currentStep = n;
+  panels.forEach(p => p.style.display = p.dataset.panel == n ? 'block' : 'none');
+  steps.forEach(s => s.classList.toggle('active', Number(s.dataset.step) === n));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Dark mode toggle
+const darkToggle = document.getElementById('darkToggle');
+darkToggle.addEventListener('change', e => {
+  document.documentElement.classList.toggle('dark', e.target.checked);
+});
+
+// Navigation buttons
+document.getElementById('next1').addEventListener('click', ()=>{
+  if(validateStep(1)) showStep(2);
+});
+
+document.getElementById('next2').addEventListener('click', ()=>{
+  if(validateStep(2)) showStep(3);
+});
+
+document.getElementById('prev2').addEventListener('click', ()=> showStep(1));
+document.getElementById('prev3').addEventListener('click', ()=> showStep(2));
+
+// Initial
+showStep(1);
+
+// ========== Validation ==========
+function setError(fieldName, msg){
+  const el = document.querySelector(`[data-for="${fieldName}"]`);
+  const input = document.querySelector(`[name="${fieldName}"]`) || document.getElementById(fieldName);
+  if(el) el.textContent = msg || '';
+  if(input){
+    input.classList.toggle('invalid', !!msg);
+    input.classList.toggle('valid', !msg && input.value);
+  }
+}
+
+function validateField(name){
+  const val = (document.querySelector(`[name="${name}"]`) || document.getElementById(name)).value.trim();
+  if(name === 'email'){
+    const ok = /^\S+@\S+\.\S+$/.test(val);
+    setError('email', ok? '': 'Masukkan email yang valid');
+    return ok;
+  }
+  if(['namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen','perihal','tanggalRekaman','tanggalPengajuan','jamAwal','jamAkhir','lokasi','arahKamera'].includes(name)){
+    const ok = val.length > 0;
+    setError(name, ok? '': 'Field wajib diisi');
+    return ok;
+  }
+  return true;
+}
+
+// Real-time validation listeners
+['email','namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen','perihal','tanggalRekaman','tanggalPengajuan','jamAwal','jamAkhir','lokasi','arahKamera'].forEach(name=>{
+  const el = document.querySelector(`[name="${name}"]`) || document.getElementById(name);
+  if(el){
+    el.addEventListener('input', ()=> validateField(name));
+    el.addEventListener('blur', ()=> validateField(name));
+  }
+});
+
+function validateStep(step){
+  let ok = true;
+  if(step === 1){
+    ['email','namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen'].forEach(f=>{ if(!validateField(f)) ok = false});
+  }
+  if(step === 2){
+    ['tanggalPengajuan','perihal','tanggalRekaman','jamAwal','jamAkhir','lokasi','arahKamera'].forEach(f=>{ if(!validateField(f)) ok = false});
+    // Additional: jam akhir > jam awal
+    const jamAwal = document.getElementById('jamAwal').value;
+    const jamAkhir = document.getElementById('jamAkhir').value;
+    if(jamAwal && jamAkhir && jamAkhir <= jamAwal){
+      setError('jamAkhir','Jam akhir harus setelah jam awal');
+      ok = false;
+    }
+  }
+  return ok;
+}
+
+// ========== File handling & preview & progress ==========
+const lampiranInput = document.getElementById('lampiran');
+const thumb = document.getElementById('thumb');
+const progBar = document.getElementById('progBar');
+let currentFileBase64 = '';
+
+lampiranInput.addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  // Validate size (limit 5MB)
+  if(file.size > 5 * 1024 * 1024){
+    setError('lampiran','Ukuran file maksimal 5MB');
+    lampiranInput.value = '';
+    return;
+  } else setError('lampiran','');
+
+  // preview
+  const url = URL.createObjectURL(file);
+  thumb.innerHTML = `<img src="${url}" alt="preview">`;
+
+  // convert to base64 with progress
+  currentFileBase64 = await fileToBase64WithProgress(file);
+});
+
+function fileToBase64WithProgress(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onprogress = (evt)=>{
+      if(evt.lengthComputable){
+        const percent = Math.round((evt.loaded/evt.total)*100);
+        progBar.style.width = percent + '%';
+        document.getElementById('progBar').style.width = percent + '%';
+      }
+    };
+    reader.onload = () => { progBar.style.width = '100%'; resolve(reader.result); };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ========== Submit (XHR with upload progress) ==========
+const form = document.getElementById('cctvForm');
+form.addEventListener('submit', (ev) => {
+  ev.preventDefault();
+  // final validation
+  if(!validateStep(1) || !validateStep(2)) { showStep(1); return; }
+  const agree = document.getElementById('agree');
+  if(!agree.checked){ setError('agree','Anda harus menyetujui pernyataan'); showStep(3); return; } else setError('agree','');
+
+  // collect data
+  const data = {
+    email: document.getElementById('email').value.trim(),
+    namaPemohon: document.getElementById('namaPemohon').value.trim(),
+    nikPemohon: document.getElementById('nikPemohon').value.trim(),
+    noHp: document.getElementById('noHp').value.trim(),
+    namaAtasan: document.getElementById('namaAtasan').value.trim(),
+    nikAtasan: document.getElementById('nikAtasan').value.trim(),
+    divisi: document.getElementById('divisi').value.trim(),
+    departemen: document.getElementById('departemen').value.trim(),
+    tanggalPengajuan: document.getElementById('tanggalPengajuan').value,
+    perihal: document.getElementById('perihal').value.trim(),
+    tanggalRekaman: document.getElementById('tanggalRekaman').value,
+    jamAwal: document.getElementById('jamAwal').value,
+    jamAkhir: document.getElementById('jamAkhir').value,
+    lokasi: document.getElementById('lokasi').value.trim(),
+    arahKamera: document.getElementById('arahKamera').value.trim(),
+    lampiran: currentFileBase64 || ''
+  };
+
+  // send via XHR to get upload progress
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', scriptURL, true);
+  xhr.setRequestHeader('Content-Type','application/json');
+
+  xhr.upload.onprogress = function(e){
+    if(e.lengthComputable){
+      const perc = Math.round((e.loaded/e.total)*100);
+      progBar.style.width = perc + '%';
+    }
+  };
+
+  xhr.onreadystatechange = function(){
+    if(xhr.readyState === 4){
+      try{
+        const res = JSON.parse(xhr.responseText);
+        if(xhr.status >=200 && xhr.status < 300 && res.status === 'success'){
+          document.getElementById('status').textContent = 'Pengajuan berhasil dikirim!';
+          document.getElementById('status').className = 'success';
+          form.reset();
+          thumb.innerHTML = 'Preview';
+          progBar.style.width = '0%';
+          showStep(1);
+        } else {
+          document.getElementById('status').textContent = 'Gagal: ' + (res && res.error ? res.error : xhr.statusText);
+          document.getElementById('status').className = 'error';
+        }
+      }catch(err){
+        document.getElementById('status').textContent = 'Gagal memproses respons server.';
+        document.getElementById('status').className = 'error';
+      }
+    }
+  };
+
+  xhr.onerror = function(){
+    document.getElementById('status').textContent = 'Gagal mengirim — cek koneksi atau URL Web App.';
+    document.getElementById('status').className = 'error';
+  };
+
+  xhr.send(JSON.stringify(data));
+  document.getElementById('status').textContent = 'Mengirim...';
+});
+
+// Minor improvement: allow pressing Enter to go to next step on some fields
+['email','namaPemohon','nikPemohon','noHp'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') { e.preventDefault(); document.getElementById('next1').click(); } });
+});
+
+</script>
+</body>
+</html>
