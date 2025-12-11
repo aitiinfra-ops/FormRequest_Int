@@ -434,7 +434,7 @@ form.addEventListener('submit', (ev) => {
     lampiran: currentFileBase64 || ''
   };
 
-document.getElementById('status').textContent = 'Mengirim via Fetch...';
+document.getElementById('status').textContent = 'Data sedang diproses...';
 
 fetch(scriptURL, {
     method: 'POST',
@@ -462,7 +462,7 @@ fetch(scriptURL, {
     showStep(1);
 })
 .catch(err => {
-    document.getElementById('status').textContent = 'Gagal mengirim (Fetch) — cek koneksi jaringan Anda.';
+    document.getElementById('status').textContent = 'Gagal mengirim data — cek koneksi jaringan Anda.';
     document.getElementById('status').className = 'error';
 });
 
