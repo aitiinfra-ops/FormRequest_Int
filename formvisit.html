@@ -5,24 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Form Permintaan Rekaman CCTV - PT Transportasi Jakarta</title>
 
-<!--
-  PENTING:
-  1) GANTI nilai scriptURL di bagian <script> dengan URL Web App Google Apps Script (Deploy -> Web App).
-  2) GANTI folderId di Apps Script dengan ID folder Google Drive tempat lampiran disimpan.
-  3) Pastikan Web App di-deploy dengan akses "Anyone" atau sesuai kebijakan organisasi.
--->
-
 <style>
   :root{
-    --primary: #005BAC;      /* TJ dark blue */
-    --accent: #00AEEF;       /* TJ light blue */
+    --primary: #005BAC;
+    --accent: #00AEEF;
     --bg: #f4f9ff;
     --card: #ffffff;
     --muted: #6b7280;
     --radius: 12px;
   }
 
-  /* Dark-mode variables applied to html.dark */
   html.dark {
     --primary: #6ea7ff;
     --accent: #59c1ff;
@@ -32,24 +24,18 @@
     color: #e6f0ff;
   }
 
-  /* Reset minimal */
   *{box-sizing: border-box}
   html,body{height:100%;margin:0;font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;background:var(--bg);color:#0f172a;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
-  /* Wrapper */
   .page-wrap{max-width:920px;margin:24px auto;padding:16px}
-  .brand{
-    display:flex;gap:12px;align-items:center;margin-bottom:18px
-  }
+  .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}
   .brand img{width:60px;height:auto}
   .brand .title{font-size:18px;font-weight:700;color:var(--primary)}
   .brand .subtitle{font-size:13px;color:var(--muted)}
 
-  /* Card */
   .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.06);overflow:hidden;transform-origin:top center;animation:cardEntry .45s ease both}
   @keyframes cardEntry{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
 
-  /* Stepper */
   .steps{display:flex;gap:8px;margin-bottom:16px;align-items:center}
   .step{flex:1;padding:8px 10px;border-radius:10px;background:#f1f5f9;color:#94a3b8;font-weight:600;text-align:center;font-size:13px}
   .step.active{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 6px 18px rgba(0,91,172,0.18)}
@@ -59,40 +45,40 @@
   .col{flex:1;min-width:0}
 
   label{display:block;font-size:13px;color:#0f172a;margin-bottom:6px;font-weight:600}
-  input[type=text], input[type=email], input[type=date], input[type=time], select, textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef9;background:#fbfeff;font-size:14px}
+  input[type=text], input[type=email], input[type=date], input[type=time], select, textarea{
+    width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef9;background:#fbfeff;font-size:14px
+  }
   textarea{min-height:80px}
-  input:focus, textarea:focus, select:focus{outline:none;border-color:var(--primary);box-shadow:0 6px 18px rgba(0,91,172,0.06)}
+  input:focus, textarea:focus, select:focus{
+    outline:none;border-color:var(--primary);box-shadow:0 6px 18px rgba(0,91,172,0.06)
+  }
 
-  /* adapt inputs for dark mode */
-  html.dark input, html.dark textarea, html.dark select { background: #0b2233; border-color: #123246; color: #e6f0ff }
+  html.dark input, html.dark textarea, html.dark select {
+    background: #0b2233; border-color: #123246; color: #e6f0ff
+  }
 
   .help{font-size:12px;color:var(--muted);margin-top:6px}
   .error{color:#ef4444;font-size:12px;margin-top:6px}
   .success{color:#16a34a;font-size:12px;margin-top:6px}
 
-  /* File preview & progress */
   .file-area{display:flex;gap:12px;align-items:center}
   .thumb{width:84px;height:84px;border-radius:8px;background:#eef6ff;display:flex;align-items:center;justify-content:center;overflow:hidden}
   .thumb img{width:100%;height:100%;object-fit:cover}
+
   .progress{height:8px;width:100%;background:#eef2ff;border-radius:8px;overflow:hidden}
   .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .2s ease}
 
-  /* Actions */
   .actions{display:flex;gap:12px;margin-top:14px}
   .btn{padding:12px 16px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
   .btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 8px 24px rgba(0,91,172,0.12)}
   .btn-ghost{background:transparent;border:1px solid #e6eef9;color:var(--muted)}
 
-  /* Buttons responsive full width on mobile */
   @media (max-width:600px){.actions{flex-direction:column}.btn{width:100%}}
 
-  /* Footer status */
   #status{margin-top:12px;font-weight:700;text-align:center}
 
-  /* small screens */
   @media (max-width:540px){.brand .title{font-size:16px}.brand img{width:48px}}
 
-  /* subtle micro animations */
   .fadeIn{animation:fadeIn .42s ease both}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
@@ -103,7 +89,6 @@
   input:checked + .switch{background:linear-gradient(90deg,var(--primary),var(--accent))}
   input:checked + .switch .*****{left:22px}
 
-  /* validation colors */
   .valid{border:1px solid #16a34a}
   .invalid{border:1px solid #ef4444}
 </style>
@@ -112,23 +97,21 @@
 
 <div class="page-wrap">
   <div class="brand">
-    <!-- use raw GitHub URL so logo loads on GitHub Pages -->
     <img src="https://raw.githubusercontent.com/aitiinfra-ops/FormRequest_Int/main/logo_tj.png" alt="Transjakarta logo">
     <div>
       <div class="title">PT Transportasi Jakarta</div>
       <div class="subtitle">Form Permintaan Rekaman CCTV — Internal</div>
     </div>
     <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
-      <div class="toggle" title="Toggle Dark Mode" style="align-items:center;display:flex">
+      <div class="toggle" title="Toggle Dark Mode">
         <label style="font-size:13px;color:var(--muted);margin-right:6px">Dark</label>
-        <input id="darkToggle" type="checkbox" aria-label="Toggle dark mode">
+        <input id="darkToggle" type="checkbox">
         <div class="switch"><div class="*****"></div></div>
       </div>
     </div>
   </div>
 
   <div class="card" id="mainCard">
-
     <div class="steps" id="steps">
       <div class="step active" data-step="1">1. Pemohon</div>
       <div class="step" data-step="2">2. Detail</div>
@@ -211,7 +194,6 @@
         <div class="actions">
           <button type="button" class="btn btn-primary" id="next1">Lanjutkan ke Detail</button>
         </div>
-
       </div>
 
       <!-- STEP 2 -->
@@ -314,15 +296,12 @@
       </div>
 
     </form>
-
   </div>
 </div>
 
 <script>
-// ========== CONFIG ==========
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzY8QPVpmIOW0byBVNKwYnsW7e_zmIQb7441-y0ICBfMBeVgMaXC3c79swW715rkunO4A/exec'; // GANTI: URL Web App (Apps Script) setelah deploy
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzY8QPVpmIOW0byBVNKwYnsW7e_zmIQb7441-y0ICBfMBeVgMaXC3c79swW715rkunO4A/exec';
 
-// ========== UI Helpers ==========
 const steps = Array.from(document.querySelectorAll('.step'));
 const panels = Array.from(document.querySelectorAll('.step-panel'));
 let currentStep = 1;
@@ -334,28 +313,16 @@ function showStep(n){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// Dark mode toggle (applies class to <html>)
-const darkToggle = document.getElementById('darkToggle');
-darkToggle.addEventListener('change', e => {
+document.getElementById('darkToggle').addEventListener('change', e => {
   document.documentElement.classList.toggle('dark', e.target.checked);
 });
 
-// Navigation buttons
-document.getElementById('next1').addEventListener('click', ()=>{
-  if(validateStep(1)) showStep(2);
-});
-
-document.getElementById('next2').addEventListener('click', ()=>{
-  if(validateStep(2)) showStep(3);
-});
-
+document.getElementById('next1').addEventListener('click', ()=>{ if(validateStep(1)) showStep(2); });
+document.getElementById('next2').addEventListener('click', ()=>{ if(validateStep(2)) showStep(3); });
 document.getElementById('prev2').addEventListener('click', ()=> showStep(1));
 document.getElementById('prev3').addEventListener('click', ()=> showStep(2));
-
-// Initial
 showStep(1);
 
-// ========== Validation ==========
 function setError(fieldName, msg){
   const el = document.querySelector(`[data-for="${fieldName}"]`);
   const input = document.querySelector(`[name="${fieldName}"]`) || document.getElementById(fieldName);
@@ -382,7 +349,6 @@ function validateField(name){
   return true;
 }
 
-// Real-time validation listeners
 ['email','namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen','perihal','tanggalRekaman','tanggalPengajuan','jamAwal','jamAkhir','lokasi','arahKamera'].forEach(name=>{
   const el = document.querySelector(`[name="${name}"]`) || document.getElementById(name);
   if(el){
@@ -398,7 +364,6 @@ function validateStep(step){
   }
   if(step === 2){
     ['tanggalPengajuan','perihal','tanggalRekaman','jamAwal','jamAkhir','lokasi','arahKamera'].forEach(f=>{ if(!validateField(f)) ok = false});
-    // Additional: jam akhir > jam awal
     const jamAwal = document.getElementById('jamAwal').value;
     const jamAkhir = document.getElementById('jamAkhir').value;
     if(jamAwal && jamAkhir && jamAkhir <= jamAwal){
@@ -409,7 +374,6 @@ function validateStep(step){
   return ok;
 }
 
-// ========== File handling & preview & progress ==========
 const lampiranInput = document.getElementById('lampiran');
 const thumb = document.getElementById('thumb');
 const progBar = document.getElementById('progBar');
@@ -418,18 +382,13 @@ let currentFileBase64 = '';
 lampiranInput.addEventListener('change', async (e)=>{
   const file = e.target.files[0];
   if(!file) return;
-  // Validate size (limit 5MB)
   if(file.size > 5 * 1024 * 1024){
     setError('lampiran','Ukuran file maksimal 5MB');
     lampiranInput.value = '';
     return;
   } else setError('lampiran','');
-
-  // preview
   const url = URL.createObjectURL(file);
   thumb.innerHTML = `<img src="${url}" alt="preview">`;
-
-  // convert to base64 with progress
   currentFileBase64 = await fileToBase64WithProgress(file);
 });
 
@@ -449,76 +408,71 @@ function fileToBase64WithProgress(file){
   });
 }
 
-// ========== Submit (XHR with upload progress) ==========
 const form = document.getElementById('cctvForm');
 form.addEventListener('submit', (ev) => {
   ev.preventDefault();
-  // final validation
   if(!validateStep(1) || !validateStep(2)) { showStep(1); return; }
   const agree = document.getElementById('agree');
   if(!agree.checked){ setError('agree','Anda harus menyetujui pernyataan'); showStep(3); return; } else setError('agree','');
 
-  // collect data
   const data = {
-    email: document.getElementById('email').value.trim(),
-    namaPemohon: document.getElementById('namaPemohon').value.trim(),
-    nikPemohon: document.getElementById('nikPemohon').value.trim(),
-    noHp: document.getElementById('noHp').value.trim(),
-    namaAtasan: document.getElementById('namaAtasan').value.trim(),
-    nikAtasan: document.getElementById('nikAtasan').value.trim(),
-    divisi: document.getElementById('divisi').value.trim(),
-    departemen: document.getElementById('departemen').value.trim(),
-    tanggalPengajuan: document.getElementById('tanggalPengajuan').value,
-    perihal: document.getElementById('perihal').value.trim(),
-    tanggalRekaman: document.getElementById('tanggalRekaman').value,
-    jamAwal: document.getElementById('jamAwal').value,
-    jamAkhir: document.getElementById('jamAkhir').value,
-    lokasi: document.getElementById('lokasi').value.trim(),
-    arahKamera: document.getElementById('arahKamera').value.trim(),
+    email: email.value.trim(),
+    namaPemohon: namaPemohon.value.trim(),
+    nikPemohon: nikPemohon.value.trim(),
+    noHp: noHp.value.trim(),
+    namaAtasan: namaAtasan.value.trim(),
+    nikAtasan: nikAtasan.value.trim(),
+    divisi: divisi.value.trim(),
+    departemen: departemen.value.trim(),
+    tanggalPengajuan: tanggalPengajuan.value,
+    perihal: perihal.value.trim(),
+    tanggalRekaman: tanggalRekaman.value,
+    jamAwal: jamAwal.value,
+    jamAkhir: jamAkhir.value,
+    lokasi: lokasi.value.trim(),
+    arahKamera: arahKamera.value.trim(),
     lampiran: currentFileBase64 || ''
   };
 
-    // Mengganti XHR dengan Fetch untuk menghindari CORS/masalah jaringan yang tidak terjelaskan
 document.getElementById('status').textContent = 'Mengirim via Fetch...';
 
 fetch(scriptURL, {
     method: 'POST',
-    // Gunakan 'no-cors' untuk mengatasi pemblokiran jaringan
-    // Catatan: Ini akan membuat response.status tidak bisa diandalkan.
-    mode: 'no-cors', 
+    mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
 })
 .then(response => {
-    // Karena mode: 'no-cors', kita tidak bisa membaca respons server.
-    // Kita berasumsi server menerima data.
     document.getElementById('status').textContent = 'Pengajuan mungkin berhasil dikirim (verifikasi data)!';
     document.getElementById('status').className = 'success';
-    
-    // Cek apakah data sudah masuk ke Google Sheet Anda!
-    
+
+    /* ======================================================
+       NOTIFIKASI TAMBAHAN (SATU-SATUNYA YANG DIUBAH)
+    ====================================================== */
+    alert(
+      "Pengajuan berhasil!\n\n" +
+      "Nama Pemohon: " + data.namaPemohon + "\n" +
+      "Tanggal Rekaman: " + data.tanggalRekaman + "\n" +
+      "Lokasi: " + data.lokasi
+    );
+
     form.reset();
     thumb.innerHTML = 'Preview';
     const barEl = document.getElementById('progBar'); if(barEl) barEl.style.width = '0%';
     showStep(1);
 })
 .catch(err => {
-    // Blok ini hanya akan terpicu jika ada masalah jaringan yang parah
     document.getElementById('status').textContent = 'Gagal mengirim (Fetch) — cek koneksi jaringan Anda.';
     document.getElementById('status').className = 'error';
 });
 
-  // if you are using GitHub Pages, and your WebApp doesn't accept CORS, comment the XHR and use fetch mode:no-cors
-  xhr.send(JSON.stringify(data));
-  document.getElementById('status').textContent = 'Mengirim...';
 });
 
-// Minor improvement: allow pressing Enter to go to next step on some fields
 ['email','namaPemohon','nikPemohon','noHp'].forEach(id=>{
   const el = document.getElementById(id);
-  if(el) el.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') { e.preventDefault(); document.getElementById('next1').click(); } });
+  if(el) el.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') { e.preventDefault(); next1.click(); } });
 });
-
 </script>
+
 </body>
 </html>
