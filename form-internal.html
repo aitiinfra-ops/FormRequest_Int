@@ -521,15 +521,6 @@ fetch(scriptURL, {
     document.getElementById('status').textContent = 'Pengajuan mungkin berhasil dikirim (verifikasi data)!';
     document.getElementById('status').className = 'success';
 
-    /* ======================================================
-       NOTIFIKASI TAMBAHAN (SATU-SATUNYA YANG DIUBAH)
-    ====================================================== */
-    alert(
-      "Pengajuan berhasil!\n\n" +
-      "Nama Pemohon: " + data.namaPemohon + "\n" +
-      "Tanggal Rekaman: " + data.tanggalRekaman + "\n" +
-      "Lokasi: " + data.lokasi
-    );
     // ==== SHOW MODERN SUCCESS OVERLAY ==== 
 document.getElementById("successSummary").innerHTML = `
     <b>${data.namaPemohon}</b><br>
