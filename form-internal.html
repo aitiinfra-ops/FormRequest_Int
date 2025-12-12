@@ -557,18 +557,5 @@ document.getElementById("successOverlay").style.display = "flex";
   if(el) el.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') { e.preventDefault(); next1.click(); } });
 });
 </script>
-<div id="successOverlay">
-    <div class="success-card">
-        <div class="success-check">
-            <svg viewBox="0 0 24 24"><path d="M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.5-1.5z"/></svg>
-        </div>
-        <div class="success-title">Pengajuan Berhasil!</div>
-        <div class="success-info" id="successSummary"></div>
-        <button class="success-btn" onclick="document.getElementById('successOverlay').style.display='none'">
-            Tutup
-        </button>
-    </div>
-</div>
-
 </body>
 </html>
