@@ -3,241 +3,189 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Permintaan Rekaman CCTV - Transjakarta</title>
+  <title>Permintaan Rekaman CCTV - PT Transportasi Jakarta</title>
   <meta name="description" content="Form resmi pengajuan rekaman CCTV PT Transportasi Jakarta – Internal & Eksternal"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
+    :root{
       --primary: #005BAC;
       --accent: #00AEEF;
-      --text: #ffffff;
-      --muted: rgba(255,255,255,0.9);
-      --card: rgba(255,255,255,0.14);
-      --card-hover: rgba(255,255,255,0.22);
+      --bg: #f8fbff;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --shadow: rgba(5,20,60,0.08);
     }
-    .dark {
-      --card: rgba(0,0,0,0.4);
-      --card-hover: rgba(0,0,0,0.55);
-      --muted: rgba(255,255,255,0.75);
+    html.dark{
+      --primary: #6ea7ff;
+      --accent: #59c1ff;
+      --bg: #0a1628;
+      --card: #0f1e36;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --shadow: rgba(0,0,0,0.3);
     }
-
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      background: #000;
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Inter', system-ui, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      transition:background .4s;
     }
-
-    /* Background Video */
-    #bgVideo {
-      position: fixed;
-      top: 50%; left: 50%;
-      min-width: 100%;
-      min-height: 100%;
-      transform: translate(-50%, -50%);
-      z-index: -2;
-      object-fit: cover;
+    .container{
+      max-width:620px;
+      width:100%;
+      background:var(--card);
+      border-radius:20px;
+      padding:56px 48px;
+      text-align:center;
+      box-shadow:0 24px 70px var(--shadow);
+      animation:fadeUp .7s ease both;
     }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(0,50,110,0.82), rgba(0,20,60,0.88));
-      z-index: -1;
+    .logo{
+      width:110px;
+      margin-bottom:28px;
+      filter:drop-shadow(0 4px 12px rgba(0,0,0,0.1));
     }
-
-    .container {
-      width: 90%;
-      max-width: 720px;
-      text-align: center;
-      padding: 32px 20px;
-      z-index: 10;
+    h1{
+      font-size:2.4rem;
+      font-weight:800;
+      color:var(--primary);
+      margin-bottom:16px;
+      line-height:1.2;
     }
-
-    .logo {
-      width: 120px;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 4px 15px rgba(0,0,0,0.5));
+    .subtitle{
+      font-size:1.1rem;
+      color:var(--muted);
+      margin-bottom:48px;
+      line-height:1.6;
     }
-
-    h1 {
-      font-size: clamp(2rem, 8vw, 3.2rem);
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 16px;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    .choices{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+      gap:28px;
     }
-
-    .subtitle {
-      font-size: clamp(1.1rem, 4vw, 1.3rem);
-      font-weight: 500;
-      color: var(--muted);
-      margin-bottom: 50px;
-      line-height: 1.6;
+    .card{
+      background:rgba(255,255,255,0.65);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      border-radius:18px;
+      padding:36px 28px;
+      border:1px solid rgba(0,91,172,0.08);
+      transition:all .4s ease;
     }
-
-    .choices {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin: 0 auto;
+    html.dark .card{
+      background:rgba(0,0,0,0.25);
+      border-color:rgba(110,167,255,0.15);
     }
-
-    .card {
-      background: var(--card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 24px;
-      padding: 40px 32px;
-      transition: all 0.4s ease;
-      border: 1px solid rgba(255,255,255,0.1);
+    .card:hover{
+      transform:translateY(-12px);
+      box-shadow:0 20px 50px rgba(0,91,172,0.18);
     }
-
-    .card:hover {
-      transform: translateY(-12px);
-      background: var(--card-hover);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    .card-icon{
+      width:84px;
+      height:84px;
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      border-radius:18px;
+      margin:0 auto 24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 10px 30px rgba(0,91,172,0.25);
     }
-
-    .card-icon {
-      width: 90px; height: 90px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      border-radius: 20px;
-      margin: 0 auto 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 12px 30px rgba(0,91,172,0.4);
+    .card h3{
+      font-size:1.5rem;
+      font-weight:700;
+      margin-bottom:12px;
+      color:var(--text);
     }
-
-    .card h3 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 12px;
+    .card p{
+      font-size:0.98rem;
+      color:var(--muted);
+      margin-bottom:28px;
+      line-height:1.55;
     }
-
-    .card p {
-      font-size: 1rem;
-      color: var(--muted);
-      margin-bottom: 32px;
-      line-height: 1.6;
+    .btn{
+      display:block;
+      padding:16px 24px;
+      background:linear-gradient(90deg,var(--primary),var(--accent));
+      color:white;
+      font-weight:700;
+      font-size:1.05rem;
+      border:none;
+      border-radius:14px;
+      text-decoration:none;
+      box-shadow:0 10px 30px rgba(0,91,172,0.25);
+      transition:all .3s;
     }
-
-    .btn {
-      display: block;
-      padding: 16px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      color: white;
-      font-weight: 700;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 10px 30px rgba(0,91,172,0.4);
-      transition: all 0.3s;
+    .btn:hover{
+      transform:translateY(-4px);
+      box-shadow:0 18px 45px rgba(0,91,172,0.35);
     }
-
-    .btn:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 45px rgba(0,91,172,0.55);
+    .footer{
+      margin-top:50px;
+      font-size:0.9rem;
+      color:var(--muted);
     }
-
-    /* Dark Mode Toggle – lebih besar & jelas */
-    .dark-toggle {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      z-index: 1000;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px);
-      padding: 12px 20px;
-      border-radius: 50px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    .toggle{
+      position:fixed;
+      top:24px;
+      right:24px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,255,255,0.7);
+      padding:10px 16px;
+      border-radius:50px;
+      font-size:0.95rem;
+      font-weight:600;
+      box-shadow:0 8px 25px rgba(0,0,0,0.1);
     }
-
-    .switch {
-      position: relative;
-      width: 56px;
-      height: 32px;
-      background: #334155;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: 0.4s;
+    html.dark .toggle{background:rgba(0,0,0,0.4);}
+    .switch{
+      width:52px;height:30px;
+      background:#cbd5e1;
+      border-radius:30px;
+      position:relative;
+      cursor:pointer;
+      transition:.3s;
     }
-
-    .switch::after {
-      content: '';
-      position: absolute;
-      width: 26px;
-      height: 26px;
-      background: white;
-      border-radius: 50%;
-      top: 3px;
-      left: 3px;
-      transition: 0.4s;
+    .switch::after{
+      content:'';
+      position:absolute;
+      width:24px;height:24px;
+      background:white;
+      border-radius:50%;
+      top:3px;left:3px;
+      transition:.3s;
     }
-
-    input:checked + .switch {
-      background: var(--accent);
+    input:checked + .switch{
+      background:linear-gradient(90deg,var(--primary),var(--accent));
     }
-
-    input:checked + .switch::after {
-      left: 27px;
+    input:checked + .switch::after{left:25px;}
+    input{display:none}
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(30px)}
+      to{opacity:1;transform:none}
     }
-
-    input { display: none; }
-
-    /* Lottie Bus */
-    lottie-player {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      width: 160px;
-      opacity: 0.9;
-      pointer-events: none;
-    }
-
-    footer {
-      margin-top: 60px;
-      font-size: 0.9rem;
-      color: var(--muted);
-      opacity: 0.8;
-    }
-
-    @media (max-width: 480px) {
-      .dark-toggle { top: 16px; right: 16px; padding: 10px 16px; }
-      .container { padding: 20px 16px; }
-      .card { padding: 32px 24px; }
+    @media(max-width:480px){
+      .container{padding:40px 24px}
+      h1{font-size:2rem}
+      .toggle{top:16px;right:16px;padding:8px 14px}
     }
   </style>
 </head>
 <body>
 
-  <video id="bgVideo" autoplay muted loop playsinline>
-    <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-traffic-jam-in-jakarta-at-night-12405-large.mp4" type="video/mp4">
-  </video>
-  <div class="overlay"></div>
-
-  <!-- Lottie Bus Transjakarta -->
-  <lottie-player src="https://lottie.host/8b8f2d45-8a3b-4e85-94e1-3e9d3e9c8f8f/9p2mX7kJ8Z.json" background="transparent" speed="1" loop autoplay></lottie-player>
-
-  <!-- Dark Mode Toggle yang JELAS & BESAR -->
-  <label class="dark-toggle">
+  <!-- Dark Mode Toggle -->
+  <label class="toggle" title="Toggle Dark Mode">
     <span>Dark Mode</span>
     <input type="checkbox" id="darkMode">
     <div class="switch"></div>
@@ -247,44 +195,51 @@
     <img src="https://raw.githubusercontent.com/aitiinfra-ops/FormRequest_Int/main/logo_tj.png" alt="Transjakarta" class="logo">
 
     <h1>Permintaan Rekaman CCTV</h1>
-    <p class="subtitle">PT Transportasi Jakarta<br>Silakan pilih jenis pengajuan yang sesuai</p>
+    <p class="subtitle">PT Transportasi Jakarta<br>Pilih jenis pengajuan sesuai kebutuhan Anda</p>
 
     <div class="choices">
+      <!-- INTERNAL -->
       <div class="card">
         <div class="card-icon">
-          <svg width="52" height="52" fill="white" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <svg width="48" height="48" fill="white" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
         </div>
         <h3>Internal</h3>
-        <p>Karyawan & pegawai PT Transportasi Jakarta<br>(menggunakan email @transjakarta.co.id)</p>
+        <p>Untuk karyawan & pegawai PT Transportasi Jakarta<br>(wajib menggunakan email perusahaan)</p>
         <a href="form-internal.html" class="btn">Form Internal</a>
       </div>
 
+      <!-- EKSTERNAL -->
       <div class="card">
         <div class="card-icon">
-          <svg width="52" height="52" fill="white" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/></svg>
+          <svg width="48" height="48" fill="white" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/>
+          </svg>
         </div>
         <h3>Eksternal</h3>
-        <p>Polisi, Kejaksaan, Pengadilan, Asuransi,<br>atau masyarakat dengan surat resmi</p>
+        <p>Untuk Polisi, Kejaksaan, Pengadilan,<br>Asuransi, atau masyarakat dengan surat resmi</p>
         <a href="form-eksternal.html" class="btn">Form Eksternal</a>
       </div>
     </div>
 
-    <footer>
-      © 2025 PT Transportasi Jakarta • Sistem Aman & Rahasia
-    </footer>
+    <div class="footer">
+      © 2025 PT Transportasi Jakarta • Data terenkripsi & hanya digunakan untuk keperluan resmi
+    </div>
   </div>
 
   <script>
     const toggle = document.getElementById('darkMode');
-    toggle.addEventListener('change', (e) => {
-      document.body.classList.toggle('dark', e.target.checked);
-      localStorage.setItem('darkMode', e.target.checked);
+    toggle.addEventListener('change', () => {
+      document.documentElement.classList.toggle('dark', toggle.checked);
+      localStorage.setItem('darkMode', toggle.checked);
     });
 
-    // Load preferensi
-    if (localStorage.getItem('darkMode') === 'true') {
+    // Load preferensi dark mode
+    if(localStorage.getItem('darkMode') === 'true' ||
+      (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)){
       toggle.checked = true;
-      document.body.classList.add('dark');
+      document.documentElement.classList.add('dark');
     }
   </script>
 </body>
