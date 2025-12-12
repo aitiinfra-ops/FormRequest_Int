@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Permintaan Rekaman CCTV - Eksternal | PT Transportasi Jakarta</title>
+<style>
+  :root{
+    --primary: #005BAC;
+    --accent: #00AEEF;
+    --bg: #f4f9ff;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --radius: 14px;
+  }
+  html.dark {
+    --primary: #6ea7ff;
+    --accent: #59c1ff;
+    --bg: #071122;
+    --card: #071826;
+    --muted: #93a4b4;
+    color: #e6f0ff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter', system-ui, sans-serif;
+    background:var(--bg);
+    color:#0f172a;
+    min-height:100vh;
+  }
+  .page-wrap{max-width:980px;margin:30px auto;padding:0 16px}
+  .brand{
+    display:flex;align-items:center;gap:16px;margin-bottom:24px;position:relative
+  }
+  .brand img{width:68px}
+  .brand .title{font-size:22px;font-weight:700;color:var(--primary)}
+  .brand .subtitle{font-size:14px;color:var(--muted);font-weight:500}
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:32px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.08);
+    animation:fadeIn .5s ease both
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  /* Steps */
+  .steps{
+    display:flex;background:#eef6ff;border-radius:12px;padding:6px;margin-bottom:28px;overflow:hidden
+  }
+  html.dark .steps{background:#0f1e36}
+  .step{
+    flex:1;padding:12px;text-align:center;border-radius:8px;font-weight:600;color:#64748b;transition:.3s;cursor:pointer;
+    user-select:none;
+  }
+  .step:hover{transform:translateY(-2px)}
+  .step.active{
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    color:white;box-shadow:0 6px 20px rgba(0,91,172,0.3)
+  }
+
+  /* Form */
+  .form-group{margin-bottom:22px}
+  label{
+    display:block;font-size:14px;font-weight:600;margin-bottom:8px;color:#1e293b
+  }
+  html.dark label{color:#e2e8f0}
+  input,select,textarea{
+    width:100%;padding:13px 16px;border:1px solid #e2e8f0;border-radius:10px;
+    background:#fff;font-size:15px;transition:all .2s;color:#0f172a;
+  }
+  html.dark input,html.dark select,html.dark textarea{
+    background:#0f1e36;border-color:#1e3a5f;color:#e6f0ff
+  }
+  input::placeholder, textarea::placeholder { color: #9aa4b2; }
+  input:focus,select:focus,textarea:focus{
+    outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(0,91,172,0.15)
+  }
+  textarea{resize:vertical;min-height:100px}
+
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:20px
+  }
+
+  .help{font-size:13px;color:var(--muted);margin-top:6px}
+  .error{color:#ef4444;font-size:13px;margin-top:6px}
+
+  /* STEP panels - hide/show */
+  .step-panel{display:none}
+  .step-panel.active{display:block}
+
+  /* Upload Area */
+  .upload-area{
+    border:2px dashed #94a3b8;border-radius:12px;padding:24px;text-align:center;
+    background:#f8fafc;cursor:pointer;transition:.3s;min-height:120px;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  }
+  html.dark .upload-area{background:#0f1e36;border-color:#334155}
+  .upload-area:hover{border-color:var(--primary)}
+  .file-info{margin-top:12px;font-weight:600;color:var(--primary)}
+
+  /* Buttons */
+  .actions{
+    display:flex;gap:16px;margin-top:32px;justify-content:flex-end;flex-wrap:wrap
+  }
+  .btn{
+    padding:14px 28px;border:none;border-radius:12px;font-weight:700;
+    cursor:pointer;font-size:15px;transition:.3s;background:#f1f5f9;
+  }
+  .btn-primary{
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    color:white;box-shadow:0 8px 25px rgba(0,91,172,0.25)
+  }
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 35px rgba(0,91,172,0.35)}
+  .btn-ghost{
+    background:transparent;border:1px solid #cbd5e1;color:var(--muted)
+  }
+
+  #status{margin-top:24px;padding:16px;border-radius:10px;text-align:center;font-weight:600}
+  .success{background:#ecfdf5;color:#166534}
+  .danger{background:#fef2f2;color:#991b1b}
+  .info{background:#eff6ff;color:#1e40af}
+
+  /* Dark Mode Toggle */
+  .toggle{
+    position:absolute;right:0;top:50%;transform:translateY(-50%);
+    display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)
+  }
+  .switch{
+    width:52px;height:30px;background:#cbd5e1;border-radius:30px;position:relative;cursor:pointer
+  }
+  .switch::after{
+    content:'';position:absolute;width:24px;height:24px;background:white;
+    border-radius:50%;left:3px;top:3px;transition:.3s
+  }
+  input[type="checkbox"]{display:none}
+
+  input[type="checkbox"] + .switch{display:inline-block}
+  input[type="checkbox"]:checked + .switch{background:linear-gradient(90deg,var(--primary),var(--accent))}
+  input[type="checkbox"]:checked + .switch::after{left:25px}
+
+  @media(max-width:640px){
+    .actions{flex-direction:column}
+    .btn{width:100%}
+    .toggle{position:static;margin-left:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <div class="brand">
+    <img src="https://raw.githubusercontent.com/aitiinfra-ops/FormRequest_Int/main/logo_tj.png" alt="Transjakarta">
+    <div>
+      <div class="title">PT Transportasi Jakarta</div>
+      <div class="subtitle">Form Permintaan Rekaman CCTV — Eksternal</div>
+    </div>
+    <div class="toggle">
+      <span>Dark</span>
+      <label style="display:inline-flex;align-items:center;gap:8px">
+        <input type="checkbox" id="darkToggle">
+        <div class="switch"></div>
+      </label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="steps" id="steps">
+      <div class="step active" data-step="1">1. Pemohon</div>
+      <div class="step" data-step="2">2. Detail Kejadian</div>
+      <div class="step" data-step="3">3. Lampiran & Kirim</div>
+    </div>
+
+    <form id="cctvForm" novalidate>
+
+      <!-- STEP 1: Pemohon -->
+      <div class="step-panel active" data-panel="1">
+        <h3 class="form-title">Data Pemohon (Eksternal)</h3>
+        <div class="grid">
+          <div class="form-group">
+            <label for="nama">Nama Lengkap <span style="color:#ef4444">*</span></label>
+            <input type="text" id="nama" required>
+          </div>
+          <div class="form-group">
+            <label for="jabatan">Jabatan</label>
+            <input type="text" id="jabatan">
+          </div>
+        </div>
+        <div class="grid">
+          <div class="form-group">
+            <label for="instansi">Instansi / Perusahaan <span style="color:#ef4444">*</span></label>
+            <input type="text" id="instansi" required placeholder="Contoh: Polres Jakarta Pusat">
+          </div>
+          <div class="form-group">
+            <label for="noSurat">Nomor Surat Resmi <span style="color:#ef4444">*</span></label>
+            <input type="text" id="noSurat" required placeholder="001/SPKT/VI/2025">
+          </div>
+        </div>
+        <div class="grid">
+          <div class="form-group">
+            <label for="email">Email <span style="color:#ef4444">*</span></label>
+            <input type="email" id="email" required>
+          </div>
+          <div class="form-group">
+            <label for="telepon">No. Telepon / HP <span style="color:#ef4444">*</span></label>
+            <input type="tel" id="telepon" required>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="next1">Lanjut ke Detail Kejadian</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Detail Kejadian -->
+      <div class="step-panel" data-panel="2">
+        <h3 class="form-title">Detail Kejadian</h3>
+        <div class="form-group">
+          <label for="perihal">Perihal / Kronologi Kejadian <span style="color:#ef4444">*</span></label>
+          <textarea id="perihal" required placeholder="Jelaskan kejadian secara singkat..."></textarea>
+        </div>
+        <div class="grid">
+          <div class="form-group">
+            <label for="tglKejadian">Tanggal Kejadian <span style="color:#ef4444">*</span></label>
+            <input type="date" id="tglKejadian" required>
+          </div>
+          <div class="form-group">
+            <label for="jamKejadian">Jam Kejadian (perkiraan)</label>
+            <input type="time" id="jamKejadian">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="lokasi">Lokasi Kejadian <span style="color:#ef4444">*</span></label>
+          <select id="lokasi" required>
+            <option value="">-- Pilih Lokasi --</option>
+            <option>Halte Transjakarta</option>
+            <option>Depo / Garasi</option>
+            <option>Kantor Pusat</option>
+            <option>Lainnya (tuliskan di perihal)</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" id="prev2">Kembali</button>
+          <button type="button" class="btn btn-primary" id="next2">Lanjut ke Lampiran</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Lampiran -->
+      <div class="step-panel" data-panel="3">
+        <h3 class="form-title">Lampiran & Pengiriman</h3>
+        <div class="form-group">
+          <label>Upload Surat Resmi (PDF/JPG/PNG) <span style="color:#ef4444">*</span></label>
+          <div class="upload-area" id="uploadArea" tabindex="0" role="button" aria-label="Upload surat resmi">
+            <p style="color:var(--muted);margin:0">Klik atau seret file ke sini<br><small>Max 5 MB</small></p>
+            <button type="button" onclick="document.getElementById('fileInput').click()" class="btn btn-primary" style="margin-top:12px;padding:10px 20px;font-size:14px">Pilih File</button>
+            <div id="fileInfo" class="file-info" aria-live="polite"></div>
+          </div>
+          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none" required>
+          <div class="help">Surat resmi wajib diupload</div>
+        </div>
+
+        <div class="form-group">
+          <label><input type="checkbox" id="agree" required> Saya menyatakan data yang diisi benar dan sesuai prosedur</label>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" id="prev3">Kembali</button>
+          <button type="submit" class="btn btn-primary">Kirim Permintaan</button>
+        </div>
+        <div id="status" aria-live="polite"></div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// GANTI URL INI kalau mau sheet terpisah
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzY8QPVpmIOW0byBVNKwYnsW7e_zmIQb7441-y0ICBfMBeVgMaXC3c79swW715rkunO4A/exec';
+
+const steps = document.querySelectorAll('.step');
+const panels = document.querySelectorAll('.step-panel');
+let current = 1;
+
+function showStep(n){
+  current = n;
+  panels.forEach(p => p.classList.toggle('active', Number(p.dataset.panel) === n));
+  steps.forEach(s => s.classList.toggle('active', Number(s.dataset.step) === n));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// allow clicking on step headers (optional)
+steps.forEach(s => s.addEventListener('click', ()=>{
+  const target = Number(s.dataset.step);
+  // allow going forward only if previous steps valid (basic)
+  if(target > current){
+    // simple check: validate all steps up to target-1
+    let ok = true;
+    for(let st = 1; st < target; st++){
+      if(!validate(st)){ ok = false; break; }
+    }
+    if(!ok) { alert('Harap lengkapi langkah sebelumnya terlebih dahulu'); return; }
+  }
+  showStep(target);
+}));
+
+// Dark mode
+document.getElementById('darkToggle').addEventListener('change', e=>{
+  document.documentElement.classList.toggle('dark', e.target.checked);
+  localStorage.setItem('darkExt', e.target.checked);
+});
+if(localStorage.getItem('darkExt')==='true'){
+  document.documentElement.classList.add('dark');
+  document.getElementById('darkToggle').checked = true;
+}
+
+// Navigasi step
+document.getElementById('next1').onclick = () => { if(validate(1)) showStep(2); }
+document.getElementById('next2').onclick = () => { if(validate(2)) showStep(3); }
+document.getElementById('prev2').onclick = () => showStep(1);
+document.getElementById('prev3').onclick = () => showStep(2);
+
+// Validasi sederhana per langkah
+function validate(step){
+  let ok = true;
+  if(step===1){
+    ['nama','instansi','noSurat','email','telepon'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(!el.value || !el.value.trim()) ok = false;
+    });
+  }
+  if(step===2){
+    ['perihal','tglKejadian','lokasi'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(!el.value || !el.value.trim()) ok = false;
+    });
+  }
+  return ok;
+}
+
+// Upload file
+let fileBase64 = '';
+const fileInput = document.getElementById('fileInput');
+const fileInfo = document.getElementById('fileInfo');
+const uploadArea = document.getElementById('uploadArea');
+
+function setFile(file){
+  if(!file) return;
+  if(file.size > 5*1024*1024){
+    alert('Ukuran maksimal 5 MB'); fileInput.value=''; fileBase64=''; fileInfo.textContent=''; return;
+  }
+  fileInfo.textContent = 'File: ' + file.name;
+  const reader = new FileReader();
+  reader.onload = () => fileBase64 = reader.result;
+  reader.readAsDataURL(file);
+  // set the file input files programmatically (for form completeness)
+  try {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    fileInput.files = dataTransfer.files;
+  } catch(e){ /* some browsers may not allow programmatic set; it's okay */ }
+}
+
+fileInput.addEventListener('change', e=>{
+  const file = e.target.files[0];
+  setFile(file);
+});
+
+// Drag & drop - properly handle dropped file
+['dragover','dragenter'].forEach(ev => {
+  uploadArea.addEventListener(ev, e => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+  });
+});
+['dragleave','dragend','drop'].forEach(ev => {
+  uploadArea.addEventListener(ev, e => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+  });
+});
+
+uploadArea.addEventListener('drop', e=>{
+  e.preventDefault();
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if(f) setFile(f);
+});
+
+// keyboard accessibility: press Enter/Space on upload area to open file picker
+uploadArea.addEventListener('keydown', e=>{
+  if(e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    fileInput.click();
+  }
+});
+
+// Submit
+document.getElementById('cctvForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const statusEl = document.getElementById('status');
+
+  if(!document.getElementById('agree').checked){
+    alert('Harap setujui pernyataan'); return;
+  }
+  if(!fileBase64){
+    alert('Harap upload surat resmi'); return;
+  }
+  if(!validate(1) || !validate(2)) { alert('Harap lengkapi semua field bertanda *'); return; }
+
+  statusEl.innerHTML = '<div class="info">Sedang mengirim...</div>';
+
+  const data = {
+    tipe: "EKSTERNAL",
+    nama: document.getElementById('nama').value,
+    jabatan: document.getElementById('jabatan').value || '-',
+    instansi: document.getElementById('instansi').value,
+    noSurat: document.getElementById('noSurat').value,
+    email: document.getElementById('email').value,
+    telepon: document.getElementById('telepon').value,
+    perihal: document.getElementById('perihal').value,
+    tglKejadian: document.getElementById('tglKejadian').value,
+    jamKejadian: document.getElementById('jamKejadian').value || '-',
+    lokasi: document.getElementById('lokasi').value,
+    suratFile: fileBase64,
+    timestamp: new Date().toLocaleString('id-ID')
+  };
+
+  // Fetch ke Google Script — note: script may require CORS or JSONP. Jika server tidak mengizinkan CORS,
+  // fetch dengan mode:'no-cors' tidak akan memberikan respons (silently succeed). Pertimbangkan konfigurasi server jika perlu.
+  try {
+    await fetch(scriptURL, {
+      method: 'POST',
+      mode: 'no-cors', // jika Google Apps Script di-set untuk menerima CORS, ganti ke 'cors'
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    // Karena mode no-cors tidak memberikan respons yang bisa diandalkan,
+    // kita asumsikan berhasil jika request tidak melempar error.
+    statusEl.innerHTML = '<div class="success">Pengajuan berhasil dikirim!<br>Terima kasih, kami akan segera memproses.</div>';
+    document.getElementById('cctvForm').reset();
+    fileInfo.textContent = '';
+    fileBase64 = '';
+    // kembali ke langkah pertama
+    showStep(1);
+  } catch (err) {
+    console.error(err);
+    statusEl.innerHTML = '<div class="danger">Gagal mengirim. Silakan coba lagi atau hubungi admin.</div>';
+  }
+});
+</script>
+</body>
+</html>
