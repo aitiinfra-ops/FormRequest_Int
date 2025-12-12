@@ -1,526 +1,291 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Form Permintaan Rekaman CCTV - PT Transportasi Jakarta</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Permintaan Rekaman CCTV - Transjakarta</title>
+  <meta name="description" content="Form resmi pengajuan rekaman CCTV PT Transportasi Jakarta – Internal & Eksternal"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    :root {
+      --primary: #005BAC;
+      --accent: #00AEEF;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.9);
+      --card: rgba(255,255,255,0.14);
+      --card-hover: rgba(255,255,255,0.22);
+    }
+    .dark {
+      --card: rgba(0,0,0,0.4);
+      --card-hover: rgba(0,0,0,0.55);
+      --muted: rgba(255,255,255,0.75);
+    }
 
-<!--
-  PENTING:
-  1) GANTI nilai scriptURL di bagian <script> dengan URL Web App Google Apps Script (Deploy -> Web App).
-  2) GANTI folderId di Apps Script dengan ID folder Google Drive tempat lampiran disimpan.
-  3) Pastikan Web App di-deploy dengan akses "Anyone" atau sesuai kebijakan organisasi.
--->
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+    }
 
-<style>
-  :root{
-    --primary: #005BAC;      /* TJ dark blue */
-    --accent: #00AEEF;       /* TJ light blue */
-    --bg: #f4f9ff;
-    --card: #ffffff;
-    --muted: #6b7280;
-    --radius: 12px;
-  }
+    /* Background Video */
+    #bgVideo {
+      position: fixed;
+      top: 50%; left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      z-index: -2;
+      object-fit: cover;
+    }
 
-  /* Reset minimal */
-  *{box-sizing: border-box}
-  html,body{height:100%;margin:0;font-family:Inter, 'Segoe UI', Roboto, Arial, sans-serif;background:var(--bg);color:#0f172a}
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,50,110,0.82), rgba(0,20,60,0.88));
+      z-index: -1;
+    }
 
-  /* Header */
-  .page-wrap{max-width:920px;margin:24px auto;padding:16px}
-  .brand{
-    display:flex;gap:12px;align-items:center;margin-bottom:18px
-  }
-  .brand img{width:60px;height:auto}
-  .brand .title{font-size:18px;font-weight:700;color:var(--primary)}
-  .brand .subtitle{font-size:13px;color:var(--muted)}
+    .container {
+      width: 90%;
+      max-width: 720px;
+      text-align: center;
+      padding: 32px 20px;
+      z-index: 10;
+    }
 
-  /* Card */
-  .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.06);overflow:hidden;transform-origin:top center;animation:cardEntry .5s ease both}
-  @keyframes cardEntry{from{opacity:0;transform:translateY(12px) scale(.995)}to{opacity:1;transform:none}}
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 4px 15px rgba(0,0,0,0.5));
+    }
 
-  /* Stepper */
-  .steps{display:flex;gap:8px;margin-bottom:16px;align-items:center}
-  .step{flex:1;padding:8px 10px;border-radius:10px;background:#f1f5f9;color:#94a3b8;font-weight:600;text-align:center;font-size:13px}
-  .step.active{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 6px 18px rgba(0,91,172,0.18)}
+    h1 {
+      font-size: clamp(2rem, 8vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    }
 
-  .form-grid{display:block}
-  .row{display:flex;gap:12px}
-  .col{flex:1}
+    .subtitle {
+      font-size: clamp(1.1rem, 4vw, 1.3rem);
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 50px;
+      line-height: 1.6;
+    }
 
-  label{display:block;font-size:13px;color:#0f172a;margin-bottom:6px;font-weight:600}
-  input[type=text], input[type=email], input[type=date], input[type=time], select, textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef9;background:#fbfeff;font-size:14px}
-  textarea{min-height:80px}
-  input:focus, textarea:focus, select:focus{outline:none;border-color:var(--primary);box-shadow:0 6px 18px rgba(0,91,172,0.06)}
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin: 0 auto;
+    }
 
-  .help{font-size:12px;color:var(--muted);margin-top:6px}
-  .error{color:#ef4444;font-size:12px;margin-top:6px}
-  .success{color:#16a34a;font-size:12px;margin-top:6px}
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 40px 32px;
+      transition: all 0.4s ease;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
 
-  /* File preview & progress */
-  .file-area{display:flex;gap:12px;align-items:center}
-  .thumb{width:84px;height:84px;border-radius:8px;background:#eef6ff;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .thumb img{width:100%;height:100%;object-fit:cover}
-  .progress{height:8px;width:100%;background:#eef2ff;border-radius:8px;overflow:hidden}
-  .progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .2s ease}
+    .card:hover {
+      transform: translateY(-12px);
+      background: var(--card-hover);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    }
 
-  /* Actions */
-  .actions{display:flex;gap:12px;margin-top:14px}
-  .btn{padding:12px 16px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
-  .btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:white;box-shadow:0 8px 24px rgba(0,91,172,0.12)}
-  .btn-ghost{background:transparent;border:1px solid #e6eef9;color:var(--muted)}
+    .card-icon {
+      width: 90px; height: 90px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 20px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 30px rgba(0,91,172,0.4);
+    }
 
-  /* Buttons responsive full width on mobile */
-  @media (max-width:600px){.actions{flex-direction:column}.btn{width:100%}}
+    .card h3 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
 
-  /* Footer status */
-  #status{margin-top:12px;font-weight:700;text-align:center}
+    .card p {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
 
-  /* Dark mode */
-  .dark{--bg:#071122;--card:#071826;--muted:#93a4b4;color:#e6f0ff}
-  .dark input, .dark textarea{background:#0b2233;border-color:#123246;color:#e6f0ff}
-  .dark .step{background:rgba(255,255,255,0.04);color:#8aa0b8}
+    .btn {
+      display: block;
+      padding: 16px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 10px 30px rgba(0,91,172,0.4);
+      transition: all 0.3s;
+    }
 
-  /* small screens */
-  @media (max-width:540px){.brand .title{font-size:16px}.brand img{width:48px}}
+    .btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 45px rgba(0,91,172,0.55);
+    }
 
-  /* subtle micro animations */
-  .fadeIn{animation:fadeIn .45s ease both}
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    /* Dark Mode Toggle – lebih besar & jelas */
+    .dark-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 1000;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      padding: 12px 20px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
 
-  .toggle{display:flex;align-items:center;gap:8px}
-  .toggle input{display:none}
-  .switch{width:44px;height:26px;background:#e6eef9;border-radius:18px;position:relative;cursor:pointer}
-  .knob{width:18px;height:18px;border-radius:50%;background:white;position:absolute;left:4px;top:4px;transition:left .2s ease, background .2s}
-  input:checked + .switch{background:linear-gradient(90deg,var(--primary),var(--accent))}
-  input:checked + .switch .knob{left:22px}
+    .switch {
+      position: relative;
+      width: 56px;
+      height: 32px;
+      background: #334155;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.4s;
+    }
 
-  /* validation colors */
-  .valid{border:1px solid #16a34a}
-  .invalid{border:1px solid #ef4444}
-</style>
+    .switch::after {
+      content: '';
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: 0.4s;
+    }
+
+    input:checked + .switch {
+      background: var(--accent);
+    }
+
+    input:checked + .switch::after {
+      left: 27px;
+    }
+
+    input { display: none; }
+
+    /* Lottie Bus */
+    lottie-player {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 160px;
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    footer {
+      margin-top: 60px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      opacity: 0.8;
+    }
+
+    @media (max-width: 480px) {
+      .dark-toggle { top: 16px; right: 16px; padding: 10px 16px; }
+      .container { padding: 20px 16px; }
+      .card { padding: 32px 24px; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="page-wrap">
-  <div class="brand">
-    <img src="logo_tj.png" alt="Transjakarta logo">
-    <div>
-      <div class="title">PT Transportasi Jakarta</div>
-      <div class="subtitle">Form Permintaan Rekaman CCTV — Internal</div>
-    </div>
-    <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
-      <div class="toggle" title="Toggle Dark Mode">
-        <label style="font-size:13px;color:var(--muted);margin-right:6px">Dark</label>
-        <input id="darkToggle" type="checkbox">
-        <div class="switch"><div class="knob"></div></div>
+  <video id="bgVideo" autoplay muted loop playsinline>
+    <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-traffic-jam-in-jakarta-at-night-12405-large.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
+
+  <!-- Lottie Bus Transjakarta -->
+  <lottie-player src="https://lottie.host/8b8f2d45-8a3b-4e85-94e1-3e9d3e9c8f8f/9p2mX7kJ8Z.json" background="transparent" speed="1" loop autoplay></lottie-player>
+
+  <!-- Dark Mode Toggle yang JELAS & BESAR -->
+  <label class="dark-toggle">
+    <span>Dark Mode</span>
+    <input type="checkbox" id="darkMode">
+    <div class="switch"></div>
+  </label>
+
+  <div class="container">
+    <img src="https://raw.githubusercontent.com/aitiinfra-ops/FormRequest_Int/main/logo_tj.png" alt="Transjakarta" class="logo">
+
+    <h1>Permintaan Rekaman CCTV</h1>
+    <p class="subtitle">PT Transportasi Jakarta<br>Silakan pilih jenis pengajuan yang sesuai</p>
+
+    <div class="choices">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="52" height="52" fill="white" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <h3>Internal</h3>
+        <p>Karyawan & pegawai PT Transportasi Jakarta<br>(menggunakan email @transjakarta.co.id)</p>
+        <a href="form-internal.html" class="btn">Form Internal</a>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="52" height="52" fill="white" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/></svg>
+        </div>
+        <h3>Eksternal</h3>
+        <p>Polisi, Kejaksaan, Pengadilan, Asuransi,<br>atau masyarakat dengan surat resmi</p>
+        <a href="form-eksternal.html" class="btn">Form Eksternal</a>
       </div>
     </div>
+
+    <footer>
+      © 2025 PT Transportasi Jakarta • Sistem Aman & Rahasia
+    </footer>
   </div>
 
-  <div class="card" id="mainCard">
+  <script>
+    const toggle = document.getElementById('darkMode');
+    toggle.addEventListener('change', (e) => {
+      document.body.classList.toggle('dark', e.target.checked);
+      localStorage.setItem('darkMode', e.target.checked);
+    });
 
-    <div class="steps" id="steps">
-      <div class="step active" data-step="1">1. Pemohon</div>
-      <div class="step" data-step="2">2. Detail</div>
-      <div class="step" data-step="3">3. Lampiran</div>
-    </div>
-
-    <form id="cctvForm" class="form-grid" novalidate>
-
-      <!-- STEP 1 -->
-      <div class="step-panel" data-panel="1">
-        <div class="form-title fadeIn">Data Pemohon</div>
-
-        <div class="form-group">
-          <label for="email">Email Pemohon</label>
-          <input id="email" name="email" type="email" required placeholder="name@perusahaan.co.id">
-          <div class="help">Gunakan email perusahaan</div>
-          <div class="error" data-for="email"></div>
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label for="namaPemohon">Nama Pemohon</label>
-              <input id="namaPemohon" name="namaPemohon" type="text" required>
-              <div class="error" data-for="namaPemohon"></div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-group">
-              <label for="nikPemohon">NIK Pemohon</label>
-              <input id="nikPemohon" name="nikPemohon" type="text" required>
-              <div class="error" data-for="nikPemohon"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="noHp">No. Handphone</label>
-          <input id="noHp" name="noHp" type="text" inputmode="tel" required placeholder="08xxxxxxxxxx">
-          <div class="error" data-for="noHp"></div>
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label for="namaAtasan">Nama Atasan Pemohon</label>
-              <input id="namaAtasan" name="namaAtasan" type="text" required>
-              <div class="error" data-for="namaAtasan"></div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-group">
-              <label for="nikAtasan">NIK Atasan Pemohon</label>
-              <input id="nikAtasan" name="nikAtasan" type="text" required>
-              <div class="error" data-for="nikAtasan"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label for="divisi">Divisi</label>
-              <input id="divisi" name="divisi" type="text" required>
-              <div class="error" data-for="divisi"></div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-group">
-              <label for="departemen">Departemen</label>
-              <input id="departemen" name="departemen" type="text" required>
-              <div class="error" data-for="departemen"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="btn btn-primary" id="next1">Lanjutkan ke Detail</button>
-        </div>
-
-      </div>
-
-      <!-- STEP 2 -->
-      <div class="step-panel" data-panel="2" style="display:none">
-        <div class="form-title fadeIn">Detail Permintaan</div>
-
-        <div class="form-group">
-          <label for="tanggalPengajuan">Tanggal Pengajuan</label>
-          <input id="tanggalPengajuan" name="tanggalPengajuan" type="date" required>
-          <div class="error" data-for="tanggalPengajuan"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="perihal">Perihal Kebutuhan</label>
-          <textarea id="perihal" name="perihal" rows="3" required></textarea>
-          <div class="error" data-for="perihal"></div>
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <div class="form-group">
-              <label for="tanggalRekaman">Tanggal Rekaman</label>
-              <input id="tanggalRekaman" name="tanggalRekaman" type="date" required>
-              <div class="error" data-for="tanggalRekaman"></div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-group">
-              <label for="jamAwal">Jam Awal</label>
-              <input id="jamAwal" name="jamAwal" type="time" required>
-              <div class="error" data-for="jamAwal"></div>
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="form-group">
-              <label for="jamAkhir">Jam Akhir</label>
-              <input id="jamAkhir" name="jamAkhir" type="time" required>
-              <div class="error" data-for="jamAkhir"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="lokasi">Lokasi Kejadian</label>
-          <input id="lokasi" name="lokasi" type="text" required>
-          <div class="error" data-for="lokasi"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="arahKamera">Arah Kamera</label>
-          <input id="arahKamera" name="arahKamera" type="text" required>
-          <div class="error" data-for="arahKamera"></div>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="btn btn-ghost" id="prev2">Kembali</button>
-          <button type="button" class="btn btn-primary" id="next2">Lanjutkan ke Lampiran</button>
-        </div>
-      </div>
-
-      <!-- STEP 3 -->
-      <div class="step-panel" data-panel="3" style="display:none">
-        <div class="form-title fadeIn">Lampiran & Konfirmasi</div>
-
-        <div class="form-group">
-          <label>Upload Foto (Lampiran)</label>
-          <div class="file-area">
-            <div class="thumb" id="thumb">Preview</div>
-            <div style="flex:1">
-              <input id="lampiran" name="lampiranFile" type="file" accept="image/*">
-              <div class="help">Foto akan diupload ke Google Drive; link akan disimpan di Google Sheet.</div>
-              <div class="error" data-for="lampiran"></div>
-              <div style="margin-top:10px" class="progress"><i id="progBar"></i></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Pernyataan</label>
-          <div style="font-size:13px;color:var(--muted);">Saya menyatakan data yang saya isi adalah benar dan untuk keperluan internal PT Transportasi Jakarta.</div>
-          <div style="margin-top:8px">
-            <label><input id="agree" type="checkbox"> Saya setuju</label>
-            <div class="error" data-for="agree"></div>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button type="button" class="btn btn-ghost" id="prev3">Kembali</button>
-          <button type="submit" class="btn btn-primary" id="submitBtn">Kirim Pengajuan</button>
-        </div>
-
-        <div id="status"></div>
-      </div>
-
-    </form>
-
-  </div>
-</div>
-
-<script>
-// ========== CONFIG ==========
-
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwu9mwlACoQ3lww9jBaRMs2IWF9yaTJnKJk8FgkVRz2jbTNjzl6EKJVCMkJHpn4u4UzZg/exec'; // GANTI: URL Web App (Apps Script) setelah deploy
-
-// ========== UI Helpers ==========
-const steps = Array.from(document.querySelectorAll('.step'));
-const panels = Array.from(document.querySelectorAll('.step-panel'));
-let currentStep = 1;
-
-function showStep(n){
-  currentStep = n;
-  panels.forEach(p => p.style.display = p.dataset.panel == n ? 'block' : 'none');
-  steps.forEach(s => s.classList.toggle('active', Number(s.dataset.step) === n));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// Dark mode toggle
-const darkToggle = document.getElementById('darkToggle');
-darkToggle.addEventListener('change', e => {
-  document.documentElement.classList.toggle('dark', e.target.checked);
-});
-
-// Navigation buttons
-document.getElementById('next1').addEventListener('click', ()=>{
-  if(validateStep(1)) showStep(2);
-});
-
-document.getElementById('next2').addEventListener('click', ()=>{
-  if(validateStep(2)) showStep(3);
-});
-
-document.getElementById('prev2').addEventListener('click', ()=> showStep(1));
-document.getElementById('prev3').addEventListener('click', ()=> showStep(2));
-
-// Initial
-showStep(1);
-
-// ========== Validation ==========
-function setError(fieldName, msg){
-  const el = document.querySelector(`[data-for="${fieldName}"]`);
-  const input = document.querySelector(`[name="${fieldName}"]`) || document.getElementById(fieldName);
-  if(el) el.textContent = msg || '';
-  if(input){
-    input.classList.toggle('invalid', !!msg);
-    input.classList.toggle('valid', !msg && input.value);
-  }
-}
-
-function validateField(name){
-  const val = (document.querySelector(`[name="${name}"]`) || document.getElementById(name)).value.trim();
-  if(name === 'email'){
-    const ok = /^\S+@\S+\.\S+$/.test(val);
-    setError('email', ok? '': 'Masukkan email yang valid');
-    return ok;
-  }
-  if(['namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen','perihal','tanggalRekaman','tanggalPengajuan','jamAwal','jamAkhir','lokasi','arahKamera'].includes(name)){
-    const ok = val.length > 0;
-    setError(name, ok? '': 'Field wajib diisi');
-    return ok;
-  }
-  return true;
-}
-
-// Real-time validation listeners
-['email','namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen','perihal','tanggalRekaman','tanggalPengajuan','jamAwal','jamAkhir','lokasi','arahKamera'].forEach(name=>{
-  const el = document.querySelector(`[name="${name}"]`) || document.getElementById(name);
-  if(el){
-    el.addEventListener('input', ()=> validateField(name));
-    el.addEventListener('blur', ()=> validateField(name));
-  }
-});
-
-function validateStep(step){
-  let ok = true;
-  if(step === 1){
-    ['email','namaPemohon','nikPemohon','noHp','namaAtasan','nikAtasan','divisi','departemen'].forEach(f=>{ if(!validateField(f)) ok = false});
-  }
-  if(step === 2){
-    ['tanggalPengajuan','perihal','tanggalRekaman','jamAwal','jamAkhir','lokasi','arahKamera'].forEach(f=>{ if(!validateField(f)) ok = false});
-    // Additional: jam akhir > jam awal
-    const jamAwal = document.getElementById('jamAwal').value;
-    const jamAkhir = document.getElementById('jamAkhir').value;
-    if(jamAwal && jamAkhir && jamAkhir <= jamAwal){
-      setError('jamAkhir','Jam akhir harus setelah jam awal');
-      ok = false;
+    // Load preferensi
+    if (localStorage.getItem('darkMode') === 'true') {
+      toggle.checked = true;
+      document.body.classList.add('dark');
     }
-  }
-  return ok;
-}
-
-// ========== File handling & preview & progress ==========
-const lampiranInput = document.getElementById('lampiran');
-const thumb = document.getElementById('thumb');
-const progBar = document.getElementById('progBar');
-let currentFileBase64 = '';
-
-lampiranInput.addEventListener('change', async (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  // Validate size (limit 5MB)
-  if(file.size > 5 * 1024 * 1024){
-    setError('lampiran','Ukuran file maksimal 5MB');
-    lampiranInput.value = '';
-    return;
-  } else setError('lampiran','');
-
-  // preview
-  const url = URL.createObjectURL(file);
-  thumb.innerHTML = `<img src="${url}" alt="preview">`;
-
-  // convert to base64 with progress
-  currentFileBase64 = await fileToBase64WithProgress(file);
-});
-
-function fileToBase64WithProgress(file){
-  return new Promise((resolve,reject)=>{
-    const reader = new FileReader();
-    reader.onprogress = (evt)=>{
-      if(evt.lengthComputable){
-        const percent = Math.round((evt.loaded/evt.total)*100);
-        progBar.style.width = percent + '%';
-        document.getElementById('progBar').style.width = percent + '%';
-      }
-    };
-    reader.onload = () => { progBar.style.width = '100%'; resolve(reader.result); };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-// ========== Submit (XHR with upload progress) ==========
-const form = document.getElementById('cctvForm');
-form.addEventListener('submit', (ev) => {
-  ev.preventDefault();
-  // final validation
-  if(!validateStep(1) || !validateStep(2)) { showStep(1); return; }
-  const agree = document.getElementById('agree');
-  if(!agree.checked){ setError('agree','Anda harus menyetujui pernyataan'); showStep(3); return; } else setError('agree','');
-
-  // collect data
-  const data = {
-    email: document.getElementById('email').value.trim(),
-    namaPemohon: document.getElementById('namaPemohon').value.trim(),
-    nikPemohon: document.getElementById('nikPemohon').value.trim(),
-    noHp: document.getElementById('noHp').value.trim(),
-    namaAtasan: document.getElementById('namaAtasan').value.trim(),
-    nikAtasan: document.getElementById('nikAtasan').value.trim(),
-    divisi: document.getElementById('divisi').value.trim(),
-    departemen: document.getElementById('departemen').value.trim(),
-    tanggalPengajuan: document.getElementById('tanggalPengajuan').value,
-    perihal: document.getElementById('perihal').value.trim(),
-    tanggalRekaman: document.getElementById('tanggalRekaman').value,
-    jamAwal: document.getElementById('jamAwal').value,
-    jamAkhir: document.getElementById('jamAkhir').value,
-    lokasi: document.getElementById('lokasi').value.trim(),
-    arahKamera: document.getElementById('arahKamera').value.trim(),
-    lampiran: currentFileBase64 || ''
-  };
-
-  // send via XHR to get upload progress
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', scriptURL, true);
-  xhr.setRequestHeader('Content-Type','application/json');
-
-  xhr.upload.onprogress = function(e){
-    if(e.lengthComputable){
-      const perc = Math.round((e.loaded/e.total)*100);
-      progBar.style.width = perc + '%';
-    }
-  };
-
-  xhr.onreadystatechange = function(){
-    if(xhr.readyState === 4){
-      try{
-        const res = JSON.parse(xhr.responseText);
-        if(xhr.status >=200 && xhr.status < 300 && res.status === 'success'){
-          document.getElementById('status').textContent = 'Pengajuan berhasil dikirim!';
-          document.getElementById('status').className = 'success';
-          form.reset();
-          thumb.innerHTML = 'Preview';
-          progBar.style.width = '0%';
-          showStep(1);
-        } else {
-          document.getElementById('status').textContent = 'Gagal: ' + (res && res.error ? res.error : xhr.statusText);
-          document.getElementById('status').className = 'error';
-        }
-      }catch(err){
-        document.getElementById('status').textContent = 'Gagal memproses respons server.';
-        document.getElementById('status').className = 'error';
-      }
-    }
-  };
-
-  xhr.onerror = function(){
-    document.getElementById('status').textContent = 'Gagal mengirim — cek koneksi atau URL Web App.';
-    document.getElementById('status').className = 'error';
-  };
-
-  xhr.send(JSON.stringify(data));
-  document.getElementById('status').textContent = 'Mengirim...';
-});
-
-// Minor improvement: allow pressing Enter to go to next step on some fields
-['email','namaPemohon','nikPemohon','noHp'].forEach(id=>{
-  const el = document.getElementById(id);
-  if(el) el.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') { e.preventDefault(); document.getElementById('next1').click(); } });
-});
-
-</script>
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
